@@ -49,10 +49,6 @@ Folder 1): Scripts
    
 Please feel free to reach out if there are any specific questions (rriggin@uncc.edu or chaos93677@me.com).
 
-
-Link to M.S. Thesis Document: 
-
 Riggin , Roger R., IV. (2022). Idealized simulations of supercell thunderstorms interacting with the appalachian mountains (Order No. 29397578). Available from Dissertations & Theses @ University of North Carolina Charlotte. (2726338467). Retrieved from https://www.proquest.com/dissertations-theses/idealized-simulations-supercell-thunderstorms/docview/2726338467/se-2
-
 
 A link to the publication will be provided once it has been accepted into an AMS Journal. 
