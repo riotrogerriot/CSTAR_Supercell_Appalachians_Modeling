@@ -2,8 +2,8 @@
 
  Hello,
   The following repository contains all necessary files and scripts to replicate the numerical modeling and analysis
- work from Riggin et al. (202X). The following document will outline what files are located where and how to utilize 
- them in order to replicate and/or advance the current work.
+ work from my thesis and upcoming publication, Riggin et al. (202X). The following document will outline what files 
+ are located where and how to utilize them in order to replicate and/or advance the current work.
 
 Folder 1): Scripts
   This folder contains a series of interconnected python3 scripts that work together to perform analysis on each
