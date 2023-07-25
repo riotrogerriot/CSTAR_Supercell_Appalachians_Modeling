@@ -43,6 +43,7 @@ print( "\nBegin {}...".format( program ) )
 # Begin: Plot Configuration
 #-----------------------------------------------------------------------------
 
+# (!!! Requires output files that were to large to upload to repo please contact corresponding author for data if needed !!!)
 output_dir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR/Initial_Conditions_Output/Panel_Plot/'
 
 sound_type = [ 'Upstream', 'Peak', 'Downstream' ]
