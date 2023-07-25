@@ -124,7 +124,7 @@ for x in range (0, len( sup_start ) ):
     if( linear[x] > 0 ):
         linear[x] = linear[x] - 24
         
-# Open terrain file for background data
+# Open terrain file for background data (!!! REQUIRES output file with interpolated terrain !!!)
 terr_file = '/Users/roger/Desktop/Realistic_Terrain_Track_Swath/cs_rltrn_no_out_cm1out_000097.nc' 
 ds = xr.open_dataset( terr_file, engine = "netcdf4", decode_cf = True )
 xh = ds.coords[ 'xh' ].values * units( 'km' )
