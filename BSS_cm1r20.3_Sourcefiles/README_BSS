@@ -1,0 +1,42 @@
+README file for how to run continuous BSS in CM1 (updated for r20.3)
+Author: C.E. Davenport, June 2023
+
+The package for incorporating continous BSS contains several files of interest:
+1. Makefile to compile; note that compiler selection is specific for UNC Charlotte HPC system
+2. base_bss.F;
+3. bss_tend.F;
+4. cm1.F; updated to include variable declarations and calls to bss subroutines
+
+
+
+How to incorporate BSS files: 
+1. Save copies of any duplicate files listed above you may already have for CM1 (i..e, cm1.F and Makefile)
+   The native CM1r20.3 code can be found at https://www2.mmm.ucar.edu/people/bryan/cm1/
+2. Move all files to the cm1r20.3/src folder; the submit script should go in cm1r20.3/run
+3. Load mpi compiler (I was able to successfully compile with "module load openmpi/3.1.2-pgi" and settings found in Makefile)
+4. In src folder, type "make"
+
+
+
+How to run CM1 with BSS:
+1. Set up model as you desire (grid spacings, microphysics, initiation type, etc) within the namelist file
+2. Within your namelist, go to the "param8" section, which contains flex variables. Change settings according to how you want to run BSS. Currently hardwired to apply tendencies between initial sounding (found in the "input_sounding" file in run folder) and two additional soundings. In other words, tendencies are computed between 1st (original input) and 2nd soundings, then between 2nd and 3rd soundings. It's a bit hacked, yes, but it works.
+
+var1: BSS start time (in sec)
+
+var2: BSS end time (in sec)
+
+var3: Time to implement second sounding (model run time, since start of model run)
+
+var4: Time to implement third sounding (in current formulation, should = BSS end time)
+
+var5: Change wind profile? (1=yes,0=no)
+
+var6: Change thermo profile? (1=yes,0=no)
+
+3. Modify the "replace" files found in the run directory, using the format provided. There are separate ones for the thermo and wind profiles. "Replace1" corresponds to the first sounding that replaces the original "input_sounding", then "replace2" corresponds to the second sounding that replaces the prior one.
+4. Update the submit script (runcm1.sh) with appropriate processor, walltime, etc. info
+5. Submit the run!
+
+
+Note: There are a couple of common errors I've done that are good to check for before running: 1) Make sure all soundings (input and replacement soundings) are stable (e.g., see checks in base.F that occur). If there are weird layers where N<0 or similar, that'll cause issues. 2) Make sure all soundings have depths equal to or greater than the depth of the grid. Model needs sufficient data points!
