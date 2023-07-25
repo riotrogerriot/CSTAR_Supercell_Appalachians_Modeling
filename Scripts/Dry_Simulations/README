@@ -1,1 +1,2 @@
 The provided scripts perform the analyses used to confirm blocking-potential for both the IDTRN and RLTRN simulations. Resultant figures are included for reference.
+A sample executable and associated files to re-run the CS_RTLRN_Dry_Run is provided. The other three can be replicated by changing appropriate namelist settings (e.g., itern = 1 for IDTRN or itern = 4 for RLTRN) and changing the input_sounding to the respective composite you wish to evaluate. 
