@@ -1,0 +1,203 @@
+
+ CM1 Numerical Model, release 20.3  (cm1r20.3)
+ 25 June 2021
+
+ Summary of changes.
+
+-------------------------------------------------------------
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+-------------------------------------------------------------
+1.  New options/features.
+
+   -------------------
+    cm1r20.1:
+
+ - Automatic domain decomposition for distributed memory parallelization 
+   using MPI; user no longer specifies nodex,nodey.
+   Also: there is no need for nx/nodex and ny/nodey to be exact integers;
+   i.e., domain size is now arbitrary, and is not tied to domain 
+   decomposition.
+
+ - Added P3 microphysics (ptype = 50,51,52).
+   (P3 = Predicted Particle Property bulk microphysics scheme)
+
+ - Added ISHMAEL/Jensen microphysics (ptype=55).
+   (ISHMAEL = Ice-Spheroids Habit Model with Aspect-ratio Evolution)
+
+ - Added MYJ PBL (ipbl=6, sfcmodel=7)
+   (MYJ = Mellor-Yamada-Janjic)
+
+ - Added capability to advect TKE with MYNN PBL (ipbl=4,5).  Advection of 
+   TKE is now "on" by default. 
+
+ - Added two-part near-surface subgrid turbulence model for LES (sgsmodel=3,4).
+   (Following Sullivan et al. 1994 BLM, and Bryan 2020 in prep.)
+
+ - NBA subgrid turbulence for LES (sgsmodel=5,6).
+   (NBA = Nonlinear Backscatter and Anisotropy model)
+
+ - Added large-scale nudging technique (for u,v,th,qv).  (see lsnudge.F)  
+   Based on Alland et al, 2020, article submitted to JAS)
+
+ - Domain-wide diagnostic files (dodomaindiag=.true.) can now be written
+   in CF-compliant netcdf format (output_format=2). 
+
+ - Azimuthal-average diagnostics (doazimavg=.true.) can now be written
+   in CF-compliant netcdf format (output_format=2). 
+
+ - Added option for automatic adaptive domain movement for tropical cyclones 
+   (see do_adapt_move option in namelist.input).  Storm center is based 
+   on the location of minimum pressure at the surface (actually, a smoothed 
+   surface pressure field). 
+
+ - Netcdf files are now CF-compliant (output_format=2). 
+
+ - CM1 netcdf files (output_format=2) are now directly readable by VAPOR
+   (Visualization and Analysis Platform for Ocean, Atmosphere, and Solar 
+    Researchers)  (https://www.vapor.ucar.edu/)
+
+ - Added immersed boundary (IB) method (see ib_module.F).
+   (Note: this is a simple version of the immersed boundary method, wherein
+    grid cells must be fully immersed.  Documentation is minimal, for now.
+    Contact George Bryan, gbryan@ucar.edu, if you are interested in using 
+    this capability.)
+
+ - Eddy recycling method near boundaries (see eddy_recycle.F).
+   (Again, a new but minimally documented capability.  Contact George Bryan,
+    gbryan@ucar.edu, if you are interested in more details.) 
+
+
+   -------------------
+    cm1r20.2:
+
+ - (nothing new)
+
+
+   -------------------
+    cm1r20.3:
+
+ - Added the ability to run with moisture (imoist=1) but no microphysics
+   (ptype=0).  In other words, include water vapor but no liquid or 
+   frozen water.  (This should have been an option a long time ago!) 
+
+ - Added a new solver, psolver=7, that integrates a modified form of the 
+   compressible equations following Klemp and Wilhelmson (1978).  A key 
+   feature is that the speed of sound can be modified, which can allows  
+   faster integration of CM1 in low-wind conditions (< 10 m/s).  See 
+   "psolver=7" description in README.namelist for more information.  
+
+ - Added the ability to use DNS with moisture.  At the moment, the lower 
+   and upper boundary conditions are assumed to be saturated (as in cloud 
+   chambers).  Other formulations are possible in the future. 
+
+ - Added a new option for P3:  1 ice category, 3-moment ice, plus 
+   double-moment cloud water.  (ptype=53)
+   (see Milbrandt et al. 2021, doi: 10.1175/JAS-D-20-0084.1)
+
+ - Added a new "test case" (testcase=14), shallow cumulus over land with 
+   a diurnal cycle, based on obs from ARM SGP.  See Brown et al 2002,
+   QJRMS, for more details. 
+   See also files in subdirectory run/config_files/les_ShallowCuLand/
+
+
+
+-------------------------------------------------------------
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+-------------------------------------------------------------
+2.  Changes, fixes, modifications, etc.
+
+   -------------------
+    cm1r20.1:
+
+ - Removed output_path, output_basename options for simplicity.  Instead, 
+   users are encouraged to create separate subdirectories for every simulation,
+   and name those subdirectories appropriately.  Note: CM1 does not need to 
+   be run in the "run" subdirectory; cm1.exe, namelist.input, and other files 
+   can be copied into subdirectories and executed from there.
+
+ - Some minor to major re-ordering of code to increase performance and 
+   readability (solve*.F, sound*.F, turb*.F)
+
+ - Updated RRTMG radiation, Thompson microphysics to the versions in WRFv4.2. 
+
+ - Updated NSSL microphysics code. (Thanks to Ted Mansell, NOAA/NSSL)
+
+ - More flex variables ("vars") in namelist.input. 
+
+
+   -------------------
+    cm1r20.2:
+
+ - Fixed the updraft nudging scheme when psolver=3.  
+   (sound.F)
+
+ - Fixed a problem with unitialized arrays with MYNN PBL when icloud_bl=0. 
+   (module_bl_mynn.F)
+
+ - Set default value of icloud_bl to 1 for MYNN PBL and added subgrid 
+   cloud information from MYNN PBL into RRTMG radiation scheme. 
+   (param.F, radiation_driver.F)
+
+ - Corrected resolved TKE budget in domain-wide diagnostics code.  Added 
+   u-, v-, and w-wariance budgets. 
+   (domaindiag.F)
+
+ - Fixed a problem with the eddy recycling code on the southern boundary 
+   when iorigin=2.  
+   (eddy_recycle.F)
+
+ - Fixed a quirky bug when using passive fluid tracers (iptra=1). Using 
+   passive tracers should no longer cause CM1 to mysteriously crash. 
+   (solve2.F)
+
+ - Fixed a problem with output of eddy diffusivities when using YSU PBL. 
+   (writeout.F)
+
+
+   -------------------
+    cm1r20.3:
+
+ - Fixed a major bug when using passive tracers (iptra=1) with MPI 
+   that was introduced in cm1r20.1. 
+   (Thanks to Shawn Murdzek of Penn State)
+   (cm1.F, solve2.F)
+
+ - Fixed a bug with vmax, rmax, zmax values in the azimavg_stats file 
+   when using netcdf and doazimavg=true.
+   (Thanks to Xiaomin Chen of NOAA/AOML/HRD)
+   (azimavg.F)
+
+ - The CM1 version of Monin-Obukhov similarity theory for the lower boundary 
+   (sfcmodel=5) can now be used in simulations with moisture.  
+   (sfcphys.F, turb.F)
+
+ - Modifications to the "two part" subgrid models for LES (sgsmodel=3,4) have 
+   been made to improve results in low wind-speed cases.  Probably very minor 
+   results on cases with wind speed > 10 m/s. 
+   (turb.F, turbtend.F)
+
+ - Upgraded the Thompson microphysics code to the WRFv4.3 version. 
+   (thompson.F)
+
+ - Upgraded the P3 microphysics code to the WRFv4.3 version. 
+   (module_mp_p3.F, mp_driver.F)
+
+ - Fixed a problem (that was introduced in cm1r20.1) with horizontal pressure 
+   gradient calculation in steep terrain.  Probably a minor affect on most 
+   simulations with terrain. 
+   (solve2.F)
+
+ - Added some more diagnostics to the "domain-wide diagnostics" (domaindiag)
+   code, including some triple-moment variables, level of maximum water-vapor 
+   gradient (sometimes a useful proxy for boundary-layer depth), and 
+   nondimensional wind shear based on the mean wind vector.  Fixed a few minor 
+   bugs with budgets, too.  
+   (domaindiag.F) 
+
+ - Fixed a bug when restart files are written while using adaptive timestepping,
+   but CM1 is restarted using fixed time steps.  (Thanks to Paul Markowski of 
+   Penn State) 
+   (restart.F)
+
+
+
