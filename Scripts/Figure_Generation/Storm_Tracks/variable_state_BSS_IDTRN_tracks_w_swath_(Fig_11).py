@@ -301,7 +301,7 @@ for i in range( 0, len( sim ) ):
         ax_A.text( uhx_smooth[ dis_end[i] ]-5, uhy_smooth[ dis_end[i] ], s = 'BSS1->BSS2', fontsize = 18, fontweight = 'bold', color = 'k' )
         
     
-        # Open .NC with swath data
+        # Open .NC with swath data (!!! Requires appropriate directory containing BSS IDTRN final output files !!!)
         filename2 = '/scratch/rriggin/bss_cm1r20.3_fixed/' + sim[i].upper() + '/cm1out_000073.nc'
         
         # Open the netCDF file with xarray 
@@ -355,7 +355,7 @@ for i in range( 0, len( sim ) ):
        
         
     
-        # Open .NC with swath data
+        # Open .NC with swath data (!!! Requires appropriate directory containing BSS IDTRN final output files !!!)
         filename2 = '/scratch/rriggin/bss_cm1r20.3_fixed/' + sim[i].upper() + '/cm1out_000073.nc'
         
         # Open the netCDF file with xarray 
@@ -460,6 +460,7 @@ cbar4.set_label( label = 'UH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bo
 # BSS Sounding Section
 #-----------------------------------------------------------------------------
 
+# (!!! Requires appropriate directory containing Initial Conditions Model Output Files !!!)
 output_dir = '/scratch/rriggin/bss_cm1r20.3_fixed/IC_Output_Files/'
 sim_type = [ 'Crosser', 'Non-Crosser' ]
 sound_type = [ 'Upstream', 'Peak', 'Downstream', 'Upstream', 'Peak', 'Downstream' ]
@@ -804,7 +805,7 @@ for i in range( 0, len( current_ax ) ):
 
 # Save figure
 fig.savefig(
-            fname = '/scratch/rriggin/bss_cm1r20.3_fixed/figures/storm_tracks_w_swath.jpeg',
-            dpi = 200,
+            fname = 'BSS_IDTRN_storm_tracks_w_swath.jpeg',
+            dpi = 300,
             bbox_inches = "tight"
            )
