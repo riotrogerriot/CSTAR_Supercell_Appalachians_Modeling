@@ -1,0 +1,3 @@
+The following dat files are the results of running the provided RLTRN generating scripts for our study-specific RLTRN field (i.e., 30 m DEM data within 34-40º N, 87-78º W). Included is both a dx = 1km file that was used for testing/configuration and a dx = 250 m file that was used for the simulations discussed in the publication (e.g., model domain  of 600 x 500 km).
+
+                                                                                                                             
