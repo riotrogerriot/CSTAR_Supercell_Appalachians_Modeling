@@ -262,8 +262,9 @@ ax_J.grid()
 # Begin: Loop through each simulation
 #------------------------------------------------------------------------------
 for i in range( 0, len( sim ) ):
+
     
-    # Construct filename string
+    # Construct filename string (!!! Requires appropriate directory containing BSS IDTRN CSVs !!!)
     filename = '/scratch/rriggin/bss_cm1r20.3_fixed/Stat_Spreadsheets/' + sim[i] + '_model_output_stats.csv'
                
     # Read in current dataset
