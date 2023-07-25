@@ -426,7 +426,7 @@ cbar3.set_label( label = 'UH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bo
 
 # Save figure
 fig.savefig(
-            fname = 'RLETRN_storm_track_w_swath.jpeg',
+            fname = 'RLTRN_storm_track_w_swath.jpeg',
             dpi = 300,
             bbox_inches = "tight"
            )
