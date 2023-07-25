@@ -128,7 +128,7 @@ def witch_of_agnesi( nx = 2401, ny = 1601, dx = 250.0,
 #-------------------------------------------------------------------
 
 # Store program name
-program = 'CM1_BSS_Analysis_Storm_Tracks_w_Swath.py'
+program = 'CM1_BSS_IDTRN_Analysis_Storm_Tracks_w_Swath.py'
 
 nx = 2400
 ny = 1600
