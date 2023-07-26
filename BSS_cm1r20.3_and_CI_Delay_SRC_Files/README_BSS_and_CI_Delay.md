@@ -28,7 +28,7 @@ In Riggin IV et al. (202X), this modification required to run the steady-state R
 README file for how to run continuous BSS in CM1 (updated for r20.3)
 Author: C.E. Davenport, June 2023
 
-Refer to Letkewicz and Parker 2013 and Davenport et al. 2019 for details regarding BSS methodology
+Refer to Letkewicz and Parker (2013) and Davenport et al. (2019) for details regarding BSS methodology
 
 The package for incorporating continous BSS contains several files of interest:
 1. Makefile to compile; note that compiler selection is specific for UNC Charlotte HPC system
@@ -69,7 +69,7 @@ Note: There are a couple of common errors I've done that are good to check for b
 
 # References
 
-Davenport, Casey E., Ziegler, Conrad L., and Biggerstaff, Michael I., 2019, "Creating a More Realistic Idealized Supercell Thunderstorm Evolution via Incorporation of Base-State Environmental Variability" Monthly Weather Review Vol. 147, No. 11, pp 4177, 1520-0493
+Davenport, Casey E., Ziegler, Conrad L., and Biggerstaff, Michael I., 2019, "Creating a More Realistic Idealized Supercell Thunderstorm Evolution via Incorporation of Base-State Environmental Variability" Monthly Weather Review Vol. 147, No. 11, pp 4177, 1520-0493, https://doi.org/10.1175/MWR-D-18-0447.1.
 
 Letkewicz, C. E., A. J. French, and M. D. Parker, 2013: Base-State Substitution: An Idealized Modeling Technique for Approximating Environmental Variability. Mon. Wea. Rev., 141, 3062–3086, https://doi.org/10.1175/MWR-D-12-00200.1.
 
