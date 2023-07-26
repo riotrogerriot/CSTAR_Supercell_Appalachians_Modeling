@@ -178,7 +178,7 @@
            dmax,zdeep,lamx,lamy,xcent,ycent,aconv,convtime,                   &
            xc_uforce,xr_uforce,zr_uforce,alpha_uforce,t1_uforce,t2_uforce,    &
            
-           ! RR modified: Added t0_wnudge for Nudging start control (June 5, 2023)
+           ! RR added t0_wnudge for Nudging start control (June 5, 2023)
            xc_wnudge,xr_wnudge,zr_wnudge,alpha_wnudge, t0_wnudge, t1_wnudge,t2_wnudge,    &
            
            yc_wnudge,yr_wnudge,zc_wnudge,wmax_wnudge,                         &
