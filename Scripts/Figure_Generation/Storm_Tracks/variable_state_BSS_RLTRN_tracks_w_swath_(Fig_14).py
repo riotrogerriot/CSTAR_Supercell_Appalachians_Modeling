@@ -134,7 +134,7 @@ for x in range (0, len( sup_start ) ):
         linear[x] = linear[x] - 25
         
 # Open terrain file for background data (!!! REQUIRES OUTPUT FILE !!!)
-terr_file = '/Users/roger/Desktop/BSS_CS_RLTRN_ALL_plots/cm1out_000093.nc' 
+terr_file = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/BSS_RLTRN_Final_Output_Files/bss_cs_rltrn_all_cm1out_000093.nc' 
 ds = xr.open_dataset( terr_file, engine = "netcdf4", decode_cf = True )
 xh = ds.coords[ 'xh' ].values * units( 'km' )
 yh = ds.coords[ 'yh' ].values * units( 'km' )
@@ -202,7 +202,7 @@ ax_B.set_ylabel( 'Elevation (m)', fontsize = 18, fontweight = 'bold' )
 for i in range( 0, len( sim ) ):
     
     # Construct filename string (!!! REQUIRES Directory containing BSS_RLTRN CSVs !!!)
-    filename = '/Users/roger/Desktop/' + sim[i].upper() + '_plots/model_output_stats.csv'
+    filename = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/' + sim[i].lower() + '_model_output_stats.csv'
     
     # Read in current dataset
     ( mode, time, x1, y1, x2, y2, zs, w500m, w1km, w3km, w5km,
@@ -244,7 +244,7 @@ for i in range( 0, len( sim ) ):
         # txt4 = ax_A.text( uhx_smooth[73], uhy_smooth[73], s = 'BSS2', fontsize = 18, fontweight = 'bold', color = 'k' )
 
         # Open .NC with swath data (!!! REQUIRES OUTPUT FILE !!!)
-        filename2 = '/Users/roger/Desktop/' + sim[i].upper() + '_plots/cm1out_000093.nc'
+        filename2 = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/BSS_RLTRN_Final_Output_Files/' + sim[i].lower() + '_cm1out_000093.nc'
         
         # Open the netCDF file with xarray 
         ds = xr.open_dataset( filename2, engine = "netcdf4", decode_cf = True )
@@ -344,15 +344,221 @@ cbar2.ax.set_title( '\tUH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bold'
 #-----------------------------------------------------------------------------
 
 # (!!! Requires appropriate directory containing Initial Conditions Model Output Files !!!)
-output_dir = '/scratch/rriggin/bss_cm1r20.3_fixed/IC_Output_Files/'
+output_dir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Initial_Conditions/Initial_Conditions_Output_Files/'
 sim_type = [ 'Crosser', 'Non-Crosser' ]
 sound_type = [ 'Upstream', 'Peak', 'Downstream', 'Upstream', 'Peak', 'Downstream' ]
 bss_time = [ 't = BSS0', 't = BSS1', 't = BSS2', 't = BSS0', 't = BSS1', 't = BSS2' ]
 
 # List for looping through each axis
 current_ax = [ 'C', 'D', 'E', 'F', 'G', 'H' ]
-current_ax_label = [ 'c', 'd', 'e', 'f', 'g', 'h' ]
+current_ax_label = [ 'C', 'D', 'E', 'C', 'D', 'E' ]
 
+#------------------------------------------------------------------------------
+# Begin: Loop to plot on each axis
+#------------------------------------------------------------------------------
+for i in range( 0, len( current_ax ) ):
+    
+    # Get the original specs for subplot D
+    ss = axes[ current_ax[i] ].get_subplotspec()
+    
+    # Remove the original instance of subplot D
+    axes[ current_ax[i] ].remove()
+    
+    # Re-construct the subplot using the original specs with the skewed x-axis projection 
+    axes[ current_ax[i] ] = fig.add_subplot( ss, projection = 'skewx' )
+    
+    # Call the current axes object
+    ax = fig.add_subplot( axes[ current_ax[i] ] )
+    
+    # Create a SkewT plotting object
+    skew = plots.SkewT( fig, rotation = 45, subplot = ax, aspect = 100 )
+    
+    # Custom axes limits
+    skew.ax.set_ylim( 1000, 100 )
+    skew.ax.set_xlim( -65, 35 ) 
+    
+    # Add fiducial lines
+    skew.plot_dry_adiabats( alpha = 0.35 )
+    skew.plot_moist_adiabats( alpha = 0.35 )
+    skew.plot_mixing_lines( alpha = 0.35 )
+    skew.ax.axvline( 0, color = 'c', linestyle = '--', linewidth = 2.5, alpha = 0.35 )
+    
+    # Set the x-axis label
+    ax.set_xlabel( 
+                  xlabel = 'Temperature (\u00B0C)',
+                  fontsize = 14, fontweight = 'bold'
+                 )
+    
+    # Set the y-axis label
+    if( i == 0 or i == 3 ):
+        ax.set_ylabel( 
+                      ylabel = 'Pressure (hPa)',
+                      fontsize = 14, fontweight = 'bold'
+                     )
+        
+    # Label every other tickmark    
+    for label in ax.xaxis.get_ticklabels()[::2]:
+        label.set_visible(False)
+    for label in ax.yaxis.get_ticklabels()[::2]:
+        label.set_visible(False)
+    
+    
+    # Place a hodograph into the current axis
+    hax = inset_axes( skew.ax, '35%', '35%', loc= "upper left" )
+    
+    # # Label the hodograph
+    # hax.set_xlabel( 
+    #                'Hodograph (ms$^{-1}$)',
+    #                 loc = 'center',
+    #                 fontsize = 12, fontweight = 'bold'
+    #                )
+
+    # Logic for Axis Title
+    if( i < 3 ):
+        ax.set_title( 
+                     current_ax_label[i] + ": " + sound_type[i], loc = 'left',
+                     fontsize = 18, fontweight = 'bold'
+                    )
+        ax.set_title( 
+                     bss_time[i], loc = 'right',
+                     fontsize = 16, fontweight = 'bold'
+                    )
+    else:
+        ax.set_title( 
+                     current_ax_label[i] + ": " + sound_type[i], loc = 'left',
+                     fontsize = 18, fontweight = 'bold'
+                    )
+        ax.set_title( 
+                     bss_time[i], loc = 'right',
+                     fontsize = 16, fontweight = 'bold'
+                    )
+
+    #-----------------------------------------------------------------------------
+    # Begin: Get variables from xarray dataset
+    #-----------------------------------------------------------------------------
+    
+    # Pull sounding from center of domain
+    sx = 300
+    sy = 200
+    
+    # Open the current file
+    if( i < 3 ):
+        fname = output_dir + 'cm1out_' + sim_type[0] + '_' + sound_type[i] + '.nc'
+    else:
+        fname = output_dir + 'cm1out_' + sim_type[1] + '_' + sound_type[i] + '.nc'
+        
+    # Report to terminal
+    print( '\tNow opening {}'.format( fname ) )
+        
+    # Open the current netCDF file with xarray 
+    ds = xr.open_dataset( fname, engine = "netcdf4", decode_cf = True ) 
+   
+    # Data Variables
+    #-----------------------------------------------------------------------------
+    
+    # Get the u-component of the wind (m/s)
+    u = ds.metpy.parse_cf( 'uinterp' ).isel( time = 0, yh = sy, xh = sx )
+    
+    # Get the v-component of the wind (m/s)
+    v = ds.metpy.parse_cf( 'vinterp' ).isel( time = 0, yh = sy, xh = sx )
+    
+    # Get potential temperature (K)
+    th = ds.metpy.parse_cf( 'th' ).isel( time = 0, yh = sy, xh = sx )
+    
+    # Get pressure (Pa)
+    prs = ds.metpy.parse_cf( 'prs' ).isel( time = 0, yh = sy, xh = sx )
+    
+    # Get water-vapor mixing ratio (kg/kg)
+    qv = ds.metpy.parse_cf( 'qv' ).isel( time = 0, yh = sy, xh = sx ) 
+    
+    # Coordinate Variables
+    #-----------------------------------------------------------------------------
+    
+    # Get heights (km)
+    zh = ds.coords[ 'zh' ].values * units( 'km' )
+    
+    # Report to terminal
+    print( '\tNow closing {}'.format( fname ) )
+    
+    # Close the netCDF file
+    ds.close()
+    
+    #-----------------------------------------------------------------------------
+    # End: Get variables from xarray dataset
+    #-----------------------------------------------------------------------------
+    
+    
+    #-----------------------------------------------------------------------------
+    # Begin: Unit conversions required for MetPy functions
+    #   Notes: metpy.quantify() adds native units from Dataset
+    #   Notes: pint_xarray provides wrapper to convert units using pint.to()
+    #-----------------------------------------------------------------------------
+       
+    # Get native units for required variables
+    u = u.metpy.quantify()
+    v = v.metpy.quantify()
+    prs = prs.metpy.quantify()
+    qv = qv.metpy.quantify()
+    
+    # Convert to required units for Air Temp & Td calculations
+    prs = prs.pint.to( 'hPa' )  
+    qv = qv.pint.to( 'g/kg' )
+    
+    #-----------------------------------------------------------------------------
+    # End: Unit conversions required for MetPy functions
+    #-----------------------------------------------------------------------------
+    
+    
+    #-----------------------------------------------------------------------------
+    # Begin: Air Temperature & Dew Point Calculations
+    #-----------------------------------------------------------------------------
+    
+    # Convert potential temperature to air temperature (K)
+    temp = mpcalc.temperature_from_potential_temperature( prs, th ) 
+    
+    # Get native units
+    temp = temp.metpy.quantify()
+    
+    # Convert from K to degC
+    temp = temp.pint.to( 'degC' )
+    
+    # Compute the water vapor pressure using pressure and mixing-ratio
+    e  = mpcalc.vapor_pressure( prs, qv )
+    
+    # Compute dew point from vapor pressure (degC)
+    td = mpcalc.dewpoint( e ) 
+    
+    #-----------------------------------------------------------------------------
+    # End: Air Temperature & Dew Point Calculations
+    #-----------------------------------------------------------------------------
+
+    # Plot temp and dewpoint
+    skew.plot( prs, temp, 'tab:red', linewidth = 2.5, label = 'Temp ' )
+    skew.plot( prs, td, 'tab:green', linewidth = 2.5, label = 'Dewpoint' )
+    
+    # Calculate full parcel profile
+    prof = mpcalc.parcel_profile( prs, temp[0], td[0] ).pint.to('degC')
+
+    # Calculate LCL height
+    lcl_pressure, lcl_temperature = mpcalc.lcl( prs[0], temp[0], td[0] )
+    
+    # Calculate LFC height
+    lfc_pressure, lfc_temperature = mpcalc.lfc( prs, temp, td )
+    
+    # Calculate Equilibrium Level
+    el_pressure, el_temperature = mpcalc.el( prs, temp, td )
+    
+    # Plot parcel profile
+    skew.plot( prs, prof, linewidth = 2.5, linestyle = '--', color = 'black', alpha = 0.65, label = 'Parcel Path' )
+    
+    # Plot LCL, LFC, and EL levels
+    # skew.plot( lcl_pressure, lcl_temperature, marker = '_', markersize = 10, color = 'b' )
+    # skew.plot( lfc_pressure, lfc_temperature, marker = '_', markersize = 10, color = 'r' )
+    # skew.plot( el_pressure, el_temperature, marker = '_', markersize = 10, color = 'k' )
+    
+    # Label LCL, LFC, and EL levels
+    # plt.text( lcl_temperature.to( 'degC').m + 5, lcl_pressure.m + 25 , 'LCL', color = 'b', size = 18 )
+    # plt.text( lfc_temperature.to( 'degC').m + 5, lfc_pressure.m + 20 , 'LFC', color = 'r', size = 18 )
     # plt.text( el_temperature.to( 'degC').m + 5, el_pressure.m + 5, 'EL', color = 'k', size = 18 )
     
     # Shade areas of CAPE and CIN
@@ -480,9 +686,9 @@ current_ax_label = [ 'c', 'd', 'e', 'f', 'g', 'h' ]
 # End: BSS Sounding Section
 #-----------------------------------------------------------------------------
 
-# Save figure
-fig.savefig(
-            fname = 'BSS_RLTRN_storm_tracks_w_swath.jpeg',
-            dpi = 300,
-            bbox_inches = "tight"
-           )
+# # Save figure
+# fig.savefig(
+#             fname = 'BSS_RLTRN_storm_tracks_w_swath.jpeg',
+#             dpi = 300,
+#             bbox_inches = "tight"
+#            )
