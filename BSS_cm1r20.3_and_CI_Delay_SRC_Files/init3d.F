@@ -1376,9 +1376,9 @@
         alpha_wnudge  =      0.5                   ! alpha (1/s), inverse e-folding time for nudging
         wmax_wnudge   =     10.0                   ! w_max (m/s), max value of w to nudge towards
         
-		! RR Added to control updraft nudging start (6/5/2023)
-   		t0_wnudge     =   7200.0                   ! time (s) to turn on nudging
-		t1_wnudge     =   8100.0                   ! time (s) to start ramping down nudging
+	! RR Added to control updraft nudging start (6/5/2023)
+   	t0_wnudge     =   7200.0                   ! time (s) to turn on nudging
+	t1_wnudge     =   8100.0                   ! time (s) to start ramping down nudging
         t2_wnudge     =   8400.0                   ! time (s) to turn off nudging
 
         ! Don't change anything below here:
