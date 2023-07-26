@@ -107,11 +107,6 @@ startTime = datetime.now()
 # Report program status to terminal
 print( '\nBegin Program: {}'.format ( program ) )
 
-# Arrays to loop through simulations and assign color
-# sim = [ 'bss_nc_rltrn_all', 'bss_cs_rltrn_all' ]
-# color = [ 'tab:blue', 'tab:red' ]
-sim = [ 'bss_cs_rltrn_all' ]
-color = [ 'tab:red' ]
 
 # Arrays to loop through simulations and assign color
 sim = [ 'bss_nc_rltrn_all', 'bss_cs_rltrn_all' ]
@@ -132,6 +127,7 @@ for x in range (0, len( sup_start ) ):
     dis_end[x] = dis_end[x] - 25
     if( linear[x] > 0 ):
         linear[x] = linear[x] - 25
+        
         
 # Smoothing Parameter
 smooth = 2.0
@@ -201,10 +197,6 @@ ax_H.set_ylabel( 'Min $\u03b8_{pert}$ & $\u03b8_{pert}$ < -1 K Area * 10$^{-2}$ 
 
 # Special line
 ax_A.axhline( y = 150.0, color = 'k' ) 
-# ax_B.axhline( y = 5.0, color = 'k' )
-# ax_C.axhline( y = 3.0, color = 'k' ) 
-# ax_F.axhline( y = 150, color = 'k' ) 
-# ax_G.axhline( y = 250, color = 'k' ) 
 ax_H.axhline( y = 0, color = 'k' ) 
 
 ax_A.axvline( x = 180.0, color = 'k', linestyle = '--' )
@@ -261,18 +253,6 @@ plt.setp(
           PathEffects.withStroke( linewidth = 4, foreground = 'w', alpha = 0.75 ) ] 
         )
 
-# ax_C.annotate( 'BSS0', xy = (125, 10.25), fontsize = 14 )
-# ax_C.annotate( 'BSS0 -> BSS1', xy = (215, 10.25), fontsize = 14 )
-# ax_C.annotate( 'BSS1 -> BSS2', xy = (302.5, 10.25), fontsize = 14 )
-
-# ax_D.annotate( 'BSS0', xy = (125, 1675), fontsize = 14 )
-# ax_D.annotate( 'BSS0 -> BSS1', xy = (215, 1675), fontsize = 14 )
-# ax_D.annotate( 'BSS1 -> BSS2', xy = (302.5, 1675), fontsize = 14 )
-
-# ax_E.annotate( 'BSS0', xy = (125, 42.5), fontsize = 14 )
-# ax_E.annotate( 'BSS0 -> BSS1', xy = (215, 42.5), fontsize = 14 )
-# ax_E.annotate( 'BSS1 -> BSS2', xy = (302.5, 42.5), fontsize = 14 )
-
 
 # Fixed y-limits
 ax_A.set_ylim( -10, 750 )
@@ -297,7 +277,7 @@ ax_H.set_xlim( 60, 370 )
 for i in range( 0, len( sim ) ):
     
     # Construct filename string (!!! Requires appropriate directory containing BSS RLTRN CSVs !!!)
-    filename = '/Users/roger/Desktop/' + str(sim[i]).upper() + '_plots/model_output_stats.csv'
+    filename = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/' + str(sim[i]).lower() + '_model_output_stats.csv'
     
     
     # Read in current dataset
@@ -558,12 +538,12 @@ linear_lab = mlines.Line2D( [], [], color = 'k', marker = 's', ms = 12, label = 
 ax_G.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, linear_lab], loc = 'upper right', prop = {'size': 14}, facecolor = 'lightgrey' )
 
 
-# Save figure
-fig.savefig(
-            fname = 'BSS_RLTRN_stats_plot.jpeg',
-            dpi = 300,
-            bbox_inches = "tight"
-           )
+# # Save figure
+# fig.savefig(
+#             fname = 'BSS_RLTRN_stats_plot.jpeg',
+#             dpi = 300,
+#             bbox_inches = "tight"
+#            )
 
 
 # Report script runtime
