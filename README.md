@@ -1,5 +1,5 @@
 # CSTAR Supercell Appalachians Modeling Project README
-# Author: Roger R. Riggin IV, M.S. (rriggin@uncc.edu)
+# Corresponding Author: Roger R. Riggin IV, M.S. (rriggin@uncc.edu)
 # Latest Update: 07/26/2023
 
 Hello fellow scientists, reviewers, and/or weather-nerds :)
