@@ -4,7 +4,7 @@
 
 Hello fellow scientists, reviewers, and/or weather-nerds :)
 
-The following repository contains the necessary data, scripts, and compiled executables to review and replicate the results of Riggin IV et al. (202X), which focused on isolated supercell interactions with the complex terrain of the Appalachian Mountains via an idealized numerical model. This README will outline the layout of the repository and summarize what you can find in each individual folder. Please feel free to reach out if you have any questions or concerns while utilizing anything within this repository.
+The following repository contains the necessary data, scripts, and compiled executables to review and replicate the results of Riggin IV et al. (202X), which focused on isolated supercell interactions with the complex terrain of the Appalachian Mountains via an idealized numerical model. This study is the third part of a multi-scale analysis of numerous isolated supercells interacting with the complex terrain of the Appalachians (see Purpura et al. 2023 and McKeown et. al 202x for environmental and radar-based analyses). This README will outline the layout of the repository and summarize what you can find in each individual folder. Please feel free to reach out if you have any questions or concerns while utilizing anything within this repository.
 
 Preliminary results are already published in my Master's Thesis which is available via Proquest (Riggin 2021).
 
@@ -75,6 +75,8 @@ Bryan, G. H., and J. M. Fritsch, 2002: A benchmark simulation for moist nonhydro
 Davenport, C. E., C. L. Ziegler, and M. I. Biggerstaff, 2019: Creating a More Realistic Idealized Supercell Thunderstorm Evolution via Incorporation of Base-State Environmental Variability. Mon. Wea. Rev., 147, 4177–4198, https://doi.org/10.1175/MWR-D-18-0447.1.
 
 Letkewicz, C. E., A. J. French, and M. D. Parker, 2013: Base-state substitution: An idealized modeling technique for approximating environmental variability. Mon. Wea. Rev., 141, 3062–3086, https://doi.org/10.1175/MWR-D-12-00200.1.
+
+McKeown, K. E., C. E. Davenport, M. D. Eastin, S. M. Purpura, and R. R. Riggin IV, 202X: Radar Characteristics of Supercell Thunderstorms Interacting with the Appalachian Mountains. Wea. Forecasting. Manuscript submitted for review.
 
 Purpura, S. M., C. E. Davenport, M. D. Eastin, K. E. McKeown, and R. R. Riggin, 2023: Environmental Evolution of Supercell Thunderstorms Interacting with the Appalachian Mountains. Wea. Forecasting, 38, 179–198, https://doi.org/10.1175/WAF-D-22-0115.1.
 
