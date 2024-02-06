@@ -8,7 +8,7 @@ The following repository contains the necessary data, scripts, and compiled exec
 
 Preliminary results are already published in my Master's Thesis which is available via Proquest (Riggin 2022) or upon request.
 
-The publication (i.e., Riggin IV et al. In Review) has been submitted to Monthly Weather Review. The repository will be updated with appropriate links and references once the peer-review process is complete. A non-peer-reviewed draft is currently available upon request.
+The publication (i.e., Riggin IV et al. In Review) has been submitted to Monthly Weather Review for an initial review. The repository will be updated with appropriate links and references as the peer-review proceeds. A non-peer-reviewed draft is currently available upon request.
 
 # Folder 1): BSS_cm1r20.3_and_CI_Delay_SRC_Files
 
