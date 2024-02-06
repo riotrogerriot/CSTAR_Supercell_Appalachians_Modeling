@@ -6,7 +6,7 @@ Hello fellow scientists, reviewers, and/or weather nerds :)
 
 The following repository contains the necessary data, scripts, and compiled executables to review and replicate the results of Riggin IV et al. (202X), which focused on isolated supercell interactions with the complex terrain of the Appalachian Mountains via an idealized numerical model. This study is the third part of a multi-scale analysis of numerous isolated supercells interacting with the complex terrain of the Appalachians (see Purpura et al. 2023 and McKeown et. al 202x for environmental and radar-based analyses). This README will outline the layout of the repository and summarize what you can find in each folder. Please feel free to reach out if you have any questions or concerns while utilizing anything within this repository.
 
-Preliminary results are already published in my Master's Thesis which is available via Proquest (Riggin 2021) or upon request.
+Preliminary results are already published in my Master's Thesis which is available via Proquest (Riggin 2022) or upon request.
 
 The publication (i.e., Riggin IV et al. In Review) has been submitted to Monthly Weather Review. The repository will be updated with appropriate links and references once the peer-review process is complete. A non-peer-reviewed draft is currently available upon request.
 
