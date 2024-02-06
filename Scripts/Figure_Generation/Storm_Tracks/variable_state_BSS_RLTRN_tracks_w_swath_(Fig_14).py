@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 30 15:56:14 2022
-
-@author: roger
-"""
 
 # Import external modules
 #-------------------------------------------------------------------
@@ -16,96 +11,98 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy.ndimage as scipynd
 import matplotlib.lines as mlines
+import pint_xarray
+import cf_xarray
+import pint_xarray
 import xarray as xr
 from metpy.units import units
 import matplotlib.patheffects as PathEffects
-from metpy.units import units
-import metpy.calc as mpcalc
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-import metpy.plots as plots
-import pint
-import pint_xarray
-import cf_xarray
-from datetime import datetime
 
 
+#------------------------------------------------------------------------------
+# Begin: User-defined Functions
+#------------------------------------------------------------------------------
 
-# Begin Read-In Data Function
-#-------------------------------------------------------------------
-
+# CSV Read-In Function Specific to Tracking-Algorithm Output
+#------------------------------------------------------------------------------
 def read_stats_data( filename ):
     
     # Report program status to the terminal
     print( '\n\t Now opening input file: {} '.format( filename ) )
     
     # Store data columns
-    ( 
-     mode, time, x1, y1, x2, y2, zs, 
-     w500m, w1km, w3km, w5km,
-     zvort_surface, zvort_500m, zvort_1km, zvort_3km, zvort_5km,
-     uh_max, uh_area, uhx, uhy, uhi, uhj, sx, sy, sxi, syj,
-     mean_uv, mean_uv_dir, rm, rm_dir, lm, lm_dir,
-     shear1km, shear1km_dir, shear3km, shear3km_dir, shear6km, shear6km_dir,
-     srh500m, srh1km, srh3km, sbcape, sbcin, mlcape, mlcin, mucape, mucin, cape3,
-     lcl, lfc, delta_lfc_lcl, el, wA500m, wA1km, wA3km, wA5km, wA8km,
-     zA500m, zA1km, zA3km, zA5km, zA8km, wzA500m, wzA1km, wzA3km, wzA5km, wzA8km, meso_depth,                                
-     cp_intensity, cp_area                    
-    ) = np.genfromtxt(
-                      fname = filename,
-                      delimiter = ',',
-                      skip_header = 3,
-                      usecols = np.arange( 0, 70, 1 ),
-                      unpack = True
-                    )
+    ( mode, time, x1, y1, x2, y2, zs, w500m, w1km, w3km, w5km, zvort_surface, zvort_500m, 
+      zvort_1km, zvort_3km, zvort_5km, uh_max, uh_area, uhx, uhy, uhi, uhj, sx, sy, sxi, syj,
+      mean_uv, mean_uv_dir, rm, rm_dir, lm, lm_dir, shear1km, shear1km_dir, shear3km, shear3km_dir, 
+      shear6km, shear6km_dir, srh500m, srh1km, srh3km, sbcape, sbcin, mlcape, mlcin, mucape, mucin, 
+      cape3, lcl, lfc, delta_lfc_lcl, el, wA500m, wA1km, wA3km, wA5km, wA8km, zA500m, zA1km, zA3km, 
+      zA5km, zA8km, wzA500m, wzA1km, wzA3km, wzA5km, wzA8km, meso_depth, cp_intensity, cp_area 
+     ) = np.genfromtxt( fname = filename, delimiter = ',', skip_header = 3, usecols = np.arange( 0, 70, 1 ), unpack = True )
         
     # Report program status to terminal
     print( '\n\t Raw data successfully stored into dataframe structure...')
 
     # Return read in data arrays
-    return ( 
-            mode, time, x1, y1, x2, y2, zs, 
-            w500m, w1km, w3km, w5km,
-            zvort_surface, zvort_500m, zvort_1km, zvort_3km, zvort_5km,
-            uh_max, uh_area, uhx, uhy, uhi, uhj, sx, sy, sxi, syj,
-            mean_uv, mean_uv_dir, rm, rm_dir, lm, lm_dir,
-            shear1km, shear1km_dir, shear3km, shear3km_dir, shear6km, shear6km_dir,
-            srh500m, srh1km, srh3km, sbcape, sbcin, mlcape, mlcin, mucape, mucin, cape3,
-            lcl, lfc, delta_lfc_lcl, el, wA500m, wA1km, wA3km, wA5km, wA8km,
-            zA500m, zA1km, zA3km, zA5km, zA8km, wzA500m, wzA1km, wzA3km, wzA5km, wzA8km, meso_depth,
-            cp_intensity, cp_area                                                        
-           )
-
-# End Read-In Data Function
-#-------------------------------------------------------------------
+    return ( mode, time, x1, y1, x2, y2, zs, w500m, w1km, w3km, w5km, zvort_surface, zvort_500m, 
+      zvort_1km, zvort_3km, zvort_5km, uh_max, uh_area, uhx, uhy, uhi, uhj, sx, sy, sxi, syj,
+      mean_uv, mean_uv_dir, rm, rm_dir, lm, lm_dir, shear1km, shear1km_dir, shear3km, shear3km_dir, 
+      shear6km, shear6km_dir, srh500m, srh1km, srh3km, sbcape, sbcin, mlcape, mlcin, mucape, mucin, 
+      cape3, lcl, lfc, delta_lfc_lcl, el, wA500m, wA1km, wA3km, wA5km, wA8km, zA500m, zA1km, zA3km, 
+      zA5km, zA8km, wzA500m, wzA1km, wzA3km, wzA5km, wzA8km, meso_depth, cp_intensity, cp_area )
 
 
-# Begin Moving Average Function
-#-------------------------------------------------------------------
-
+# Moving Average Function
+#------------------------------------------------------------------------------
 def gauss_smoother( arr, smooth = 2 ) :
     ret_arr = scipynd.gaussian_filter1d( arr, smooth )
     return( ret_arr )
 
-# End Moving Average Function
-#-------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# End: User-defined Functions
+#------------------------------------------------------------------------------
 
 
-#-------------------------------------------------------------------
-#-------------------------------------------------------------------
+# Program name, main directory, and sub-directories required to run this script
+program = 'CM1_Analysis_RLTRN_Storm_Tracks_w_Swath.py'
+os_type = 1
+if( os_type == 0 ):
+    wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/'
+else:
+    wdir = 'C:/Users/rriggin/OneDrive - University of North Carolina at Charlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/'
+terr_file = wdir + 'BSS_RLTRN_Final_Output_Files/bss_cs_rltrn_cm1out_000093.nc' 
+
+# User-defined parameters
+#------------------------------------------------------------------------------
+nx = 2400           # Num of x-gridpoints
+ny = 2000           # Num of y-gridpoints
+uh_bot = 500        # Min UH plot value (m2/s2)
+uh_top = 4500       # Max UH plot value (m2/s2)
+uh_int = 1000       # UH plotting interval (m2/s2)
+uh_sigma = 5        # UH smoothing parameter
+t_max = 1400        # Max terrain height (m)
+t_int = 200         # Terrain plotting interval (m)
+x1 = 125            # X-axis min (km)
+x2 = 330            # X-axis max (km)
+alpha = 0.45        # Contourf transparency parameter
+#------------------------------------------------------------------------------
+
+
+# Simulation-Specific Parameters
+#------------------------------------------------------------------------------
+sim = [ 'bss_nc_rltrn', 'bss_cs_rltrn' ]        # Sim names
+color = [ 'tab:blue', 'tab:red'  ]              # Sim colors
+sup_start = [ 43, 40 ]                          # Supercell Start Index
+sup_end = [ 62, 55 ]                            # Supercell End Index
+dis_end = [ 79, 58 ]                            # Dissipation Time Index
+linear = [ 0, 0 ]                               # Upscale Growth Index
+#------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Begin Main Script
-#-------------------------------------------------------------------
-#-------------------------------------------------------------------
-
-# Store program name
-program = 'CM1_BSS_RLTRN_Analysis_Storm_Tracks_w_Swaths.py'
-
-nx = 2400
-ny = 2000
-uh_bot = 500
-uh_top = 4500
-uh_int = 1000
-uh_alpha = 0.35
-uh_sigma = 5.0
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
 # Record Script start time
 startTime = datetime.now()
@@ -113,28 +110,15 @@ startTime = datetime.now()
 # Report program status to terminal
 print( '\nBegin Program: {}'.format ( program ) )
 
-# Arrays to loop through simulations and assign color
-sim = [ 'bss_nc_rltrn_all', 'bss_cs_rltrn_all' ]
-color = [ 'tab:blue', 'tab:red' ]
-
-
-# Arrays for demarcating storm mode and track
-sup_start = [ 43, 39 ]
-sup_end = [  69, 56 ]
-dis_end = [ 80, 57 ]
-linear = [ 0, 0 ]
-
-
-# Adjust all timestamps by 2 hrs to acccount for delayed CI
+# Adjust all timestamps by 2 hrs to acccount for delayed CI w/ RLTRN
 for x in range (0, len( sup_start ) ):
-    sup_start[x] = sup_start[x] - 25
-    sup_end[x] = sup_end[x] - 25
-    dis_end[x] = dis_end[x] - 25
+    sup_start[x] = sup_start[x] - 24
+    sup_end[x] = sup_end[x] - 24
+    dis_end[x] = dis_end[x] - 24
     if( linear[x] > 0 ):
-        linear[x] = linear[x] - 25
+        linear[x] = linear[x] - 24
         
-# Open terrain file for background data (!!! REQUIRES OUTPUT FILE !!!)
-terr_file = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/BSS_RLTRN_Final_Output_Files/bss_cs_rltrn_all_cm1out_000093.nc' 
+# Open terrain file for background data
 ds = xr.open_dataset( terr_file, engine = "netcdf4", decode_cf = True )
 xh = ds.coords[ 'xh' ].values * units( 'km' )
 yh = ds.coords[ 'yh' ].values * units( 'km' )
@@ -146,549 +130,165 @@ X,Y = np.meshgrid( xh, yh )
 # Set tick size (Must be before calling plot object)
 plt.rcdefaults()
 plt.rc('font', weight='bold')
-plt.rc('xtick', labelsize=15)
-plt.rc('ytick', labelsize=15)
+plt.rc('xtick', labelsize=16)
+plt.rc('ytick', labelsize=16)
 
-# Create figure templates to add data to during loop
+# Plot layout layout
 figure_mosaic = """
                 .AAA.
                 .AAA.
                 .BBB.
-                .CDE.
-                .FGH.
                 """
                 
-fig, axes =  plt.subplot_mosaic(
-                                mosaic = figure_mosaic,
-                                figsize = ( 22, 22.5 ),
-                                tight_layout = True
-                               )
+# Create figure with axes based on the layout
+fig, axes =  plt.subplot_mosaic( mosaic = figure_mosaic, figsize = ( 16, 10.5 ), tight_layout = True )
 
-# Create callable axes objects
+# Create callable Panel A objects, define label, and set plotting limits
 ax_A = fig.add_subplot( axes['A'] )
-ax_A.set_title( 'a: Realistic Terrain: Variable-State (BSS) Simulations', fontsize = 20, fontweight = 'bold' )
+ax_A.set_title( 'a: RLTRN Variable-State (BSS) Environments', fontsize = 20, fontweight = 'bold', loc = 'left' )
 ax_A.set_xlabel( '', fontsize = 18, fontweight = 'bold' )
 ax_A.set_ylabel( 'Meridional Distance (km)', fontsize = 18, fontweight = 'bold' )
+ax_A.set_xlim( x1, x2 )
+ax_A.set_ylim( 175, 275 )
 
-ax_A.set_xlim( 125, 350 )
-ax_A.set_ylim( 185, 275 )
-
+# Do not label x-axis ticks on Panel A
 ax_A.xaxis.set_ticklabels([])
 
-# Terrain Contours
-terrain_contour = ax_A.contourf( 
-                                X, Y, zs,
-                                levels = np.arange( 0, 2250, 250), 
-                                cmap = plt.cm.get_cmap( "copper" ).reversed(),
-                                alpha = 0.35
-                               )
+# Fill in Panel A with a filled countour of the RLTRN field
+terrain_contour = ax_A.contourf( X, Y, zs, levels = np.arange( 0, t_max, t_int ), cmap = mpl.colormaps['copper'].reversed(),
+                                 extend = 'max', alpha = alpha )
 
+# Create callable Panel A objects, define label, and set plotting limits
 ax_B = fig.add_subplot( axes['B'] )
-ax_B.set_xlim( 125, 350 )
-ax_B.set_ylim( -50, 1250 )
-ax_B.set_yticks( np.arange( 0, 1500, 250) )
-
-ax_B = fig.add_subplot( axes['B'] )
-ax_B.set_title( 'b: Realistic Terrain Cross-Sections', fontsize = 20, fontweight = 'bold', loc = 'left' )
+ax_B.set_title( 'b: RLTRN Cross-Sections', fontsize = 20, fontweight = 'bold', loc = 'left' )
 ax_B.set_xlabel( 'Zonal Distance (km)', fontsize = 18, fontweight = 'bold' )
 ax_B.set_ylabel( 'Elevation (m)', fontsize = 18, fontweight = 'bold' )
+ax_B.set_xlim( x1, x2)
+ax_B.set_ylim( -50, 1000 )
+# ax_B.set_yticks( np.arange( 0, 1500, 250) )
 
-# # Add white space for manually adding in Soundings
-# ax_B = fig.add_subplot( axes['B'] )
-# ax_B.axis('off')
-
+#------------------------------------------------------------------------------
 # Begin: Loop through each simulation
 #------------------------------------------------------------------------------
 for i in range( 0, len( sim ) ):
     
-    # Construct filename string (!!! REQUIRES Directory containing BSS_RLTRN CSVs !!!)
-    filename = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/' + sim[i].lower() + '_model_output_stats.csv'
+    # Construct filename string (!!! REQUIRES Appropriate link to directory containing RLTRN CSVs !!!)
+    filename = wdir + sim[i] + '_model_output_stats.csv'
     
-    # Read in current dataset
-    ( mode, time, x1, y1, x2, y2, zs, w500m, w1km, w3km, w5km,
-      zvort_surface, zvort_500m, zvort_1km, zvort_3km, zvort_5km,
-      uh_max, uh_area, uhx, uhy, uhi, uhj, sx, sy, sxi, syj,
-      mean_uv, mean_uv_dir, rm, rm_dir, lm, lm_dir,
-      shear1km, shear1km_dir, shear3km, shear3km_dir, shear6km, shear6km_dir,
-      srh500m, srh1km, srh3km, sbcape, sbcin, mlcape, mlcin, mucape, mucin, cape3,
-      lcl, lfc, delta_lfc_lcl, el, wA500m, wA1km, wA3km, wA5km, wA8km,
-      zA500m, zA1km, zA3km, zA5km, zA8km,
-      wzA500m, wzA1km, wzA3km, wzA5km, wzA8km, meso_depth,
-      cp_intensity, cp_area ) = read_stats_data( filename )
+    # Read in current simulation spreadsheet summary dataset
+    ( mode, time, x1, y1, x2, y2, zs, w500m, w1km, w3km, w5km, zvort_surface, zvort_500m, 
+      zvort_1km, zvort_3km, zvort_5km, uh_max, uh_area, uhx, uhy, uhi, uhj, sx, sy, sxi, syj,
+      mean_uv, mean_uv_dir, rm, rm_dir, lm, lm_dir, shear1km, shear1km_dir, shear3km, shear3km_dir, 
+      shear6km, shear6km_dir, srh500m, srh1km, srh3km, sbcape, sbcin, mlcape, mlcin, mucape, mucin, 
+      cape3, lcl, lfc, delta_lfc_lcl, el, wA500m, wA1km, wA3km, wA5km, wA8km, zA500m, zA1km, zA3km, 
+      zA5km, zA8km, wzA500m, wzA1km, wzA3km, wzA5km, wzA8km, meso_depth, cp_intensity, cp_area ) = read_stats_data( filename )
     
-    uhx_smooth = gauss_smoother( uhx, 1. )
-    uhy_smooth = gauss_smoother( uhy, 1. )
     
-    if( i <= 2 ):
+    # 1-sigma smoothing applied to points to create clean storm tracks
+    uhx_smooth = gauss_smoother( uhx, 1.25 )
+    uhy_smooth = gauss_smoother( uhy, 1.25 )
+
+    # Plot the storm tracks as a solid line
+    if( i == 1 ):
+        storm_track = ax_A.plot( uhx_smooth[ 14:dis_end[i] ], uhy_smooth[ 14:dis_end[i] ], color = color[i], linewidth = 2.5, linestyle = '-', label = sim[i].upper() )
+    else:
         storm_track = ax_A.plot( uhx_smooth[ sup_start[i]:dis_end[i] ], uhy_smooth[ sup_start[i]:dis_end[i] ], color = color[i], linewidth = 2.5, linestyle = '-', label = sim[i].upper() )
         
-        # Demarcate where storm is supercellular
-        ax_A.scatter( uhx_smooth[ sup_start[i] ], uhy_smooth[ sup_start[i] ], color = color[i], marker ='v', s = 100, edgecolor = 'k', zorder = 10 )
-        ax_A.scatter( uhx_smooth[ sup_end[i] ], uhy_smooth[ sup_end[i] ], color = color[i], marker ='v', s = 100, edgecolor = 'k', zorder = 10 )
-    
-        # Demarcate where storm is Linear
-        if(linear[i]> 0):
-            ax_A.scatter( uhx_smooth[ sup_end[i]+1  ], uhy_smooth[ sup_end[i]+1 ], color = color[i], marker = 's', s= 80, edgecolor = 'k', zorder = 10  )
-            ax_A.scatter( uhx_smooth[ linear[i] ], uhy_smooth[ linear[i] ], color = color[i], marker = 's', s= 80, edgecolor = 'k', zorder = 10  )
-    
-        #########################################
-        ### Denote RLTRN BSS times!!! ###
-        #########################################
-        
-        txt1 = ax_A.text( uhx_smooth[ sup_start[i] ] -25, uhy_smooth[ sup_start[i] ] -1, s = 'BSS0', fontsize = 18, fontweight = 'bold', color = 'k' )
-        if( sim[i] == 'bss_cs_rltrn_all' ):
-            txt2 = ax_A.text( uhx_smooth[33]-15, uhy_smooth[33]+2.5, s = 'BSS0->BSS1', fontsize = 18, fontweight = 'bold' , color = 'k' )
-        else:
-            txt2 = ax_A.text( uhx_smooth[37]-20, uhy_smooth[37]+5, s = 'BSS0->BSS1', fontsize = 18, fontweight = 'bold' , color = 'k' )
-        # txt3 = ax_A.text( uhx_smooth[61], uhy_smooth[61], s = 'BSS1->BSS2', fontsize = 18, fontweight = 'bold', color = 'k' )
-        # txt4 = ax_A.text( uhx_smooth[73], uhy_smooth[73], s = 'BSS2', fontsize = 18, fontweight = 'bold', color = 'k' )
+    # Demarcate where storm begins and ends supercellular mode
+    ax_A.scatter( uhx_smooth[ sup_start[i] ], uhy_smooth[ sup_start[i] ], color = color[i], marker ='v', s = 100, edgecolor = 'k', zorder = 10 )
+    ax_A.scatter( uhx_smooth[ sup_end[i] ], uhy_smooth[ sup_end[i] ], color = color[i], marker ='v', s = 100, edgecolor = 'k', zorder = 10 )
 
-        # Open .NC with swath data (!!! REQUIRES OUTPUT FILE !!!)
-        filename2 = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/BSS_RLTRN_Final_Output_Files/' + sim[i].lower() + '_cm1out_000093.nc'
-        
-        # Open the netCDF file with xarray 
-        ds = xr.open_dataset( filename2, engine = "netcdf4", decode_cf = True )
-      
-        # Get the x-axis coordinates (km)
-        xh = ds.coords[ 'xh' ].values * units( 'km' )
-       
-        # Get the y-axis coordinates (km)      
-        yh = ds.coords[ 'yh' ].values * units( 'km' )
-        
-        # Create a plotting grid based on the x,y coordinates
-        X,Y = np.meshgrid( xh, yh )
-        
-        # Get the 2-5 km Updraft Helicity Swath (m^2/s^2)
-        shs = ds.metpy.parse_cf( 'shs' ).isel( time = 0, yh = slice( 0, ny), xh = slice( 0, nx )  )
+    # Demarcate where storm begins and ends linear mode (if applicable)
+    #------------------------------------------------------------------------------
+    if(linear[i]> 0):
+        ax_A.scatter( uhx_smooth[ sup_end[i]+1  ], uhy_smooth[ sup_end[i]+1 ], color = color[i], marker = 's', s= 80, edgecolor = 'k', zorder = 10  )
+        ax_A.scatter( uhx_smooth[ linear[i] ], uhy_smooth[ linear[i] ], color = color[i], marker = 's', s= 80, edgecolor = 'k', zorder = 10  )
+    #------------------------------------------------------------------------------
+
+    # Annotate BSS Transitions and add colored halos around them
+    if( i == 1 ):
+        txt1 = ax_A.text( uhx_smooth[ sup_start[i] ]-35, uhy_smooth[ sup_start[i] ]-10, s = 'BSS0', fontsize = 15, fontweight = 'bold', color = 'k' )
+        txt2 = ax_A.text( uhx_smooth[31], uhy_smooth[31]+12.5, s = 'BSS0', fontsize = 15, fontweight = 'bold' , color = 'k' )
+        txt3 = txt2
+    else:
+        txt1 = ax_A.text( uhx_smooth[ sup_start[i] ]-30, uhy_smooth[ sup_start[i] ]-2.5, s = 'BSS0', fontsize = 15, fontweight = 'bold', color = 'k' )
+        txt2 = ax_A.text( uhx_smooth[36]-15, uhy_smooth[36]-2, s = 'BSS1', fontsize = 15, fontweight = 'bold' , color = 'k' )
+        txt3 = ax_A.text( uhx_smooth[ dis_end[i] ]-25, uhy_smooth[ dis_end[i] ]-5, s = 'BSS1->BSS2', fontsize = 15, fontweight = 'bold', color = 'k' )
+    plt.setp( [txt1, txt2, txt3], path_effects = [ PathEffects.withStroke( linewidth = 3, foreground = color[i], alpha = 0.65 ) ] )  
     
-        # UH Swath Contours         
-        cs1 = ax_A.contourf( 
-                          X, Y,
-                          scipynd.gaussian_filter( shs[ :, : ], uh_sigma ),
-                          levels = np.arange( uh_bot, uh_top+uh_int, uh_int ), 
-                          alpha = uh_alpha,
-                          extend = 'max',
-                          cmap = mpl.cm.gist_gray,
-                          linewidths = 2.0
-                          )
-        
-        # Run terrain profile through guassian smoother    
-        zs_alt = gauss_smoother( zs * 1000, 1. )
-        
-        # Same plotting methods for panel G
-        ax_B.plot( uhx_smooth[ sup_start[i]:dis_end[i] ], zs_alt[ sup_start[i]:dis_end[i] ], color ='k', linewidth = 1.5, linestyle = '-', label = sim[i].upper() + ' Elevation' )
-        
-        # Fill in the area under the terrain curve
-        ax_B.fill_between( uhx_smooth[ sup_start[i]:dis_end[i] ], zs_alt[ sup_start[i]:dis_end[i] ], color = color[i], alpha = 0.75 )
-        
-        # Demarcate start/end supercell mode
-        ax_B.scatter( uhx_smooth[ sup_start[i] ], zs_alt[ sup_start[i] ], marker = 'v', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
-        ax_B.scatter( uhx_smooth[ sup_end[i] ], zs_alt[ sup_end[i] ], marker = 'v', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
 
-        # Demarcate start/end linear mode
-        if( linear[i] > 0 ):
-            ax_B.scatter( uhx_smooth[ sup_end[i] ], zs_alt[ sup_end[i] ], marker = 's', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
-            ax_B.scatter( uhx_smooth[ linear[i] ], zs_alt[ linear[i] ], marker = 's', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
-
+    # Open respective netCDF with UH swath data w/ Xarray
+    filename2 = wdir + 'BSS_RLTRN_Final_Output_Files/' + sim[i] + '_cm1out_000093.nc' 
+    ds = xr.open_dataset( filename2, engine = "netcdf4", decode_cf = True )
     
-        plt.setp( 
-                 [txt1, txt2], path_effects = [
-                 PathEffects.withStroke( linewidth = 3, foreground = color[i], alpha = 0.75 ) ]
-                )  
-     
+    # Get the 2-5 km Updraft Helicity Swath (m^2/s^2)
+    shs = ds.metpy.parse_cf( 'shs' ).isel( time = 0, yh = slice( 0, ny), xh = slice( 0, nx )  )
 
+    # UH Swath Contours (uses same XY grid from terrain file [line 122] )
+    cs1 = ax_A.contourf( X, Y, scipynd.gaussian_filter( shs[ :, : ], uh_sigma ), levels = np.arange( uh_bot, uh_top+uh_int, uh_int ), 
+                          alpha = alpha, extend = 'max', cmap = mpl.cm.gist_gray )
+    
+    
+    # Run terrain profile through guassian smoother    
+    zs_alt = gauss_smoother( zs * 1000, 0.75 )
+    
+    # Plot terrain profiles underneath xy locations of storm tracks
+    ax_B.plot( uhx_smooth[ sup_start[i]:dis_end[i] ], zs_alt[ sup_start[i]:dis_end[i] ], color ='k', linewidth = 1.5, linestyle = '-' )
+    
+    # Fill in the area under the terrain curve
+    ax_B.fill_between( uhx_smooth[ sup_start[i]:dis_end[i] ], zs_alt[ sup_start[i]:dis_end[i] ], color = color[i], alpha = 0.75, label = sim[i].upper() )
+    
+    # Demarcate start/end supercell mode on terrain curve
+    ax_B.scatter( uhx_smooth[ sup_start[i] ], zs_alt[ sup_start[i] ], marker = 'v', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
+    ax_B.scatter( uhx_smooth[ sup_end[i] ], zs_alt[ sup_end[i] ], marker = 'v', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
+
+    # Demarcate start/end linear mode on terrain curve (if applicable)
+    #------------------------------------------------------------------------------
+    if( linear[i] > 0 ):
+        ax_B.scatter( uhx_smooth[ sup_end[i] ], zs_alt[ sup_end[i] ], marker = 's', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
+        ax_B.scatter( uhx_smooth[ linear[i] ], zs_alt[ linear[i] ], marker = 's', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
+    #------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+# End: Loop through each simulation
+#------------------------------------------------------------------------------
+
+# Make labels for storm-mode and create legends
 sup_lab = mlines.Line2D( [], [], color = 'k', marker = 'v', label = 'Supercell' )
 lin_lab = mlines.Line2D( [], [], color = 'k', marker = 's', label = 'Linear' )
-
-legend_1 = ax_A.legend( title = 'Simulations', loc = 'upper right' )
+legend_1 = ax_A.legend( title = 'Simulations', loc = 'upper left', facecolor = 'lightgrey', fontsize = 14 )
+legend_2 = ax_B.legend( title = 'Cross-Sections', loc = 'upper left', facecolor = 'lightgrey', fontsize = 14 )
 ax_A.add_artist( legend_1 )
+ax_A.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, lin_lab], loc = 'lower right', facecolor = 'lightgrey', fontsize = 14 )
 
-ax_A.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, lin_lab], loc = 'lower right' )
-
+# Add grids
 ax_A.grid()
 ax_B.grid()
 
-# Include color bar legend
-cbar  = plt.colorbar( 
-                     terrain_contour,
-                     location = 'right',
-                     shrink = 0.8,
-                     fraction = 0.075,
-                     # pad = 0.05,
-                     # anchor = (0.5, 1.0),
-                     ticks = np.arange( 0, 2250, 250 ),
-                     drawedges = False,
-                     ax = ax_A
-                    ) 
-
-# Include color bar legend
-cbar2  = plt.colorbar( 
-                      cs1,
-                      location = 'right',
-                      shrink = 0.8,
-                      fraction = 0.075,
-                      # pad = 0.015,
-                      # anchor = (0.5, 1.0),
-                      ticks = np.arange( uh_bot, uh_top+uh_int, uh_int ),
-                      drawedges = True,
-                      ax = ax_B
-                    ) 
-
-
-# Set colorbar label 
+# Include color bar legend (Terrain) and set label
+cbar  = plt.colorbar( terrain_contour, location = 'right', shrink = 0.85,
+                      ticks = np.arange( 0, t_max, t_int ), drawedges = True, ax = ax_A ) 
 cbar.ax.set_title( 'Z (m)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
+
+
+# Include color bar legend (UH Swath ) and set label
+cbar2  = plt.colorbar( cs1, location = 'right', shrink = 0.85, ticks = np.arange( uh_bot, uh_top+uh_int, uh_int ),
+                       drawedges = True, ax = ax_B ) 
 cbar2.ax.set_title( '\tUH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 
-#-----------------------------------------------------------------------------
-# BSS Sounding Section
-#-----------------------------------------------------------------------------
 
-# (!!! Requires appropriate directory containing Initial Conditions Model Output Files !!!)
-output_dir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Initial_Conditions/Initial_Conditions_Output_Files/'
-sim_type = [ 'Crosser', 'Non-Crosser' ]
-sound_type = [ 'Upstream', 'Peak', 'Downstream', 'Upstream', 'Peak', 'Downstream' ]
-bss_time = [ 't = BSS0', 't = BSS1', 't = BSS2', 't = BSS0', 't = BSS1', 't = BSS2' ]
-
-# List for looping through each axis
-current_ax = [ 'C', 'D', 'E', 'F', 'G', 'H' ]
-current_ax_label = [ 'C', 'D', 'E', 'C', 'D', 'E' ]
-
-#------------------------------------------------------------------------------
-# Begin: Loop to plot on each axis
-#------------------------------------------------------------------------------
-for i in range( 0, len( current_ax ) ):
-    
-    # Get the original specs for subplot D
-    ss = axes[ current_ax[i] ].get_subplotspec()
-    
-    # Remove the original instance of subplot D
-    axes[ current_ax[i] ].remove()
-    
-    # Re-construct the subplot using the original specs with the skewed x-axis projection 
-    axes[ current_ax[i] ] = fig.add_subplot( ss, projection = 'skewx' )
-    
-    # Call the current axes object
-    ax = fig.add_subplot( axes[ current_ax[i] ] )
-    
-    # Create a SkewT plotting object
-    skew = plots.SkewT( fig, rotation = 45, subplot = ax, aspect = 100 )
-    
-    # Custom axes limits
-    skew.ax.set_ylim( 1000, 100 )
-    skew.ax.set_xlim( -65, 35 ) 
-    
-    # Add fiducial lines
-    skew.plot_dry_adiabats( alpha = 0.35 )
-    skew.plot_moist_adiabats( alpha = 0.35 )
-    skew.plot_mixing_lines( alpha = 0.35 )
-    skew.ax.axvline( 0, color = 'c', linestyle = '--', linewidth = 2.5, alpha = 0.35 )
-    
-    # Set the x-axis label
-    ax.set_xlabel( 
-                  xlabel = 'Temperature (\u00B0C)',
-                  fontsize = 14, fontweight = 'bold'
-                 )
-    
-    # Set the y-axis label
-    if( i == 0 or i == 3 ):
-        ax.set_ylabel( 
-                      ylabel = 'Pressure (hPa)',
-                      fontsize = 14, fontweight = 'bold'
-                     )
-        
-    # Label every other tickmark    
-    for label in ax.xaxis.get_ticklabels()[::2]:
-        label.set_visible(False)
-    for label in ax.yaxis.get_ticklabels()[::2]:
-        label.set_visible(False)
-    
-    
-    # Place a hodograph into the current axis
-    hax = inset_axes( skew.ax, '35%', '35%', loc= "upper left" )
-    
-    # # Label the hodograph
-    # hax.set_xlabel( 
-    #                'Hodograph (ms$^{-1}$)',
-    #                 loc = 'center',
-    #                 fontsize = 12, fontweight = 'bold'
-    #                )
-
-    # Logic for Axis Title
-    if( i < 3 ):
-        ax.set_title( 
-                     current_ax_label[i] + ": " + sound_type[i], loc = 'left',
-                     fontsize = 18, fontweight = 'bold'
-                    )
-        ax.set_title( 
-                     bss_time[i], loc = 'right',
-                     fontsize = 16, fontweight = 'bold'
-                    )
-    else:
-        ax.set_title( 
-                     current_ax_label[i] + ": " + sound_type[i], loc = 'left',
-                     fontsize = 18, fontweight = 'bold'
-                    )
-        ax.set_title( 
-                     bss_time[i], loc = 'right',
-                     fontsize = 16, fontweight = 'bold'
-                    )
-
-    #-----------------------------------------------------------------------------
-    # Begin: Get variables from xarray dataset
-    #-----------------------------------------------------------------------------
-    
-    # Pull sounding from center of domain
-    sx = 300
-    sy = 200
-    
-    # Open the current file
-    if( i < 3 ):
-        fname = output_dir + 'cm1out_' + sim_type[0] + '_' + sound_type[i] + '.nc'
-    else:
-        fname = output_dir + 'cm1out_' + sim_type[1] + '_' + sound_type[i] + '.nc'
-        
-    # Report to terminal
-    print( '\tNow opening {}'.format( fname ) )
-        
-    # Open the current netCDF file with xarray 
-    ds = xr.open_dataset( fname, engine = "netcdf4", decode_cf = True ) 
-   
-    # Data Variables
-    #-----------------------------------------------------------------------------
-    
-    # Get the u-component of the wind (m/s)
-    u = ds.metpy.parse_cf( 'uinterp' ).isel( time = 0, yh = sy, xh = sx )
-    
-    # Get the v-component of the wind (m/s)
-    v = ds.metpy.parse_cf( 'vinterp' ).isel( time = 0, yh = sy, xh = sx )
-    
-    # Get potential temperature (K)
-    th = ds.metpy.parse_cf( 'th' ).isel( time = 0, yh = sy, xh = sx )
-    
-    # Get pressure (Pa)
-    prs = ds.metpy.parse_cf( 'prs' ).isel( time = 0, yh = sy, xh = sx )
-    
-    # Get water-vapor mixing ratio (kg/kg)
-    qv = ds.metpy.parse_cf( 'qv' ).isel( time = 0, yh = sy, xh = sx ) 
-    
-    # Coordinate Variables
-    #-----------------------------------------------------------------------------
-    
-    # Get heights (km)
-    zh = ds.coords[ 'zh' ].values * units( 'km' )
-    
-    # Report to terminal
-    print( '\tNow closing {}'.format( fname ) )
-    
-    # Close the netCDF file
-    ds.close()
-    
-    #-----------------------------------------------------------------------------
-    # End: Get variables from xarray dataset
-    #-----------------------------------------------------------------------------
-    
-    
-    #-----------------------------------------------------------------------------
-    # Begin: Unit conversions required for MetPy functions
-    #   Notes: metpy.quantify() adds native units from Dataset
-    #   Notes: pint_xarray provides wrapper to convert units using pint.to()
-    #-----------------------------------------------------------------------------
-       
-    # Get native units for required variables
-    u = u.metpy.quantify()
-    v = v.metpy.quantify()
-    prs = prs.metpy.quantify()
-    qv = qv.metpy.quantify()
-    
-    # Convert to required units for Air Temp & Td calculations
-    prs = prs.pint.to( 'hPa' )  
-    qv = qv.pint.to( 'g/kg' )
-    
-    #-----------------------------------------------------------------------------
-    # End: Unit conversions required for MetPy functions
-    #-----------------------------------------------------------------------------
-    
-    
-    #-----------------------------------------------------------------------------
-    # Begin: Air Temperature & Dew Point Calculations
-    #-----------------------------------------------------------------------------
-    
-    # Convert potential temperature to air temperature (K)
-    temp = mpcalc.temperature_from_potential_temperature( prs, th ) 
-    
-    # Get native units
-    temp = temp.metpy.quantify()
-    
-    # Convert from K to degC
-    temp = temp.pint.to( 'degC' )
-    
-    # Compute the water vapor pressure using pressure and mixing-ratio
-    e  = mpcalc.vapor_pressure( prs, qv )
-    
-    # Compute dew point from vapor pressure (degC)
-    td = mpcalc.dewpoint( e ) 
-    
-    #-----------------------------------------------------------------------------
-    # End: Air Temperature & Dew Point Calculations
-    #-----------------------------------------------------------------------------
-
-    # Plot temp and dewpoint
-    skew.plot( prs, temp, 'tab:red', linewidth = 2.5, label = 'Temp ' )
-    skew.plot( prs, td, 'tab:green', linewidth = 2.5, label = 'Dewpoint' )
-    
-    # Calculate full parcel profile
-    prof = mpcalc.parcel_profile( prs, temp[0], td[0] ).pint.to('degC')
-
-    # Calculate LCL height
-    lcl_pressure, lcl_temperature = mpcalc.lcl( prs[0], temp[0], td[0] )
-    
-    # Calculate LFC height
-    lfc_pressure, lfc_temperature = mpcalc.lfc( prs, temp, td )
-    
-    # Calculate Equilibrium Level
-    el_pressure, el_temperature = mpcalc.el( prs, temp, td )
-    
-    # Plot parcel profile
-    skew.plot( prs, prof, linewidth = 2.5, linestyle = '--', color = 'black', alpha = 0.65, label = 'Parcel Path' )
-    
-    # Plot LCL, LFC, and EL levels
-    # skew.plot( lcl_pressure, lcl_temperature, marker = '_', markersize = 10, color = 'b' )
-    # skew.plot( lfc_pressure, lfc_temperature, marker = '_', markersize = 10, color = 'r' )
-    # skew.plot( el_pressure, el_temperature, marker = '_', markersize = 10, color = 'k' )
-    
-    # Label LCL, LFC, and EL levels
-    # plt.text( lcl_temperature.to( 'degC').m + 5, lcl_pressure.m + 25 , 'LCL', color = 'b', size = 18 )
-    # plt.text( lfc_temperature.to( 'degC').m + 5, lfc_pressure.m + 20 , 'LFC', color = 'r', size = 18 )
-    # plt.text( el_temperature.to( 'degC').m + 5, el_pressure.m + 5, 'EL', color = 'k', size = 18 )
-    
-    # Shade areas of CAPE and CIN
-    skew.shade_cin( prs, temp, prof, alpha = 0.2, label = 'SBCIN' )
-    skew.shade_cape( prs, temp, prof, alpha = 0.2, label = 'SBCAPE' )
-
-    # Create the hodograph object
-    h = plots.Hodograph( hax, component_range = 45.0 )
-    hax.yaxis.tick_right()
-   
-    # Add a polar grid
-    h.add_grid( increment = 10.0 )
-
-    # Height (km AGL) intervals used for hodograph plotting
-    intervals = np.array( [ 0.0, 3.0, 6.0, 9.0, 12.0, 15.0 ] ) * units( 'km' )
-    
-    # Height (km AGL) Mask
-    zh_mask = zh <= 15.0 * units( 'km' )
-
-    # Colormap scheme to match interval bins for hodograph
-    cmap = [ 'tab:red', 'tab:green', 'tab:olive', 'tab:cyan', 'tab:purple' ]
-
-    # Plot the hodograph
-    hodograph = h.plot_colormapped( u[zh_mask], v[zh_mask], c = zh[ zh_mask ], intervals = intervals, colors = cmap )
-    
-    # Modify hodograph if requested
-    #----------------------------------------------
-    # if( mod_hodo == True ):
-        
-    #     mod_angle = units.Quantity( 25, 'degrees' )   
-        
-    #     # Get magnitude and direction from original components
-    #     wspd = mpcalc.wind_speed( u, v )
-    #     wdir = mpcalc.wind_direction( u , v )
-        
-    #     # Modify the direction of the hodograph evenly throughout all layers
-    #     for j in range( 0, len( wdir) ):
-    #         wdir[j] = wdir[j] + mod_angle
-        
-    #     # Compute the new wind components
-    #     u2,v2 = mpcalc.wind_components( wspd, wdir )
-        
-    # # Plot the hodograph (m/s) with a color map based on height
-    # hodo2 = h.plot( 
-    #               u = u2,
-    #               v = v2,
-    #               # color = hodo_col[i],
-    #               # linestyle = line[0],
-    #               # alpha = 0.45,
-    #              )
-    
-    # Set hodograph plot limits
-    hax.set_xlim( -5, 45 )
-    hax.set_ylim( -5, 35 )    
-    
-    # End Modify Hodograph
-    #---------------------------------------------
-
-    # # Compute MLCAPE/CIN
-    # mlcape, mlcin = mpcalc.mixed_layer_cape_cin( prs, temp, td )
-    
-    # Compute Bunkers Storm Motions and Mean Wind
-    rm, lm, mean_uv = mpcalc.bunkers_storm_motion(
-                                                  pressure = prs,
-                                                  u = u,
-                                                  v = v,
-                                                  height = zh
-                                                 )
-
-    # Plot the RM-motion as a vector
-    h.wind_vectors( u = rm[0], v = rm[1], color = 'dimgrey', scale = 1, alpha = 0.75, width = 1, headwidth = 3 )
-    
-    # # Plot the Bunker's Right & Left Motions as labeled pointd
-    # txt5 = plt.text( rm[0].m, rm[1].m, 'RM', size = 8 )
-    # # txt6 = plt.text( lm[0].m, lm[1].m, 'LM', size = 8 )
-    
-    # # Place circles around RM & LM labels
-    # plt.scatter( rm[0].m+2.5, rm[1].m+1.25, s= 250, facecolor = 'none', edgecolor = 'k' )
-    # # plt.scatter( lm[0].m+2.5, lm[1].m+1.25, s= 250, facecolor = 'none', edgecolor = 'k' )
-    
-
-    # # Compute 0-3 km SRH
-    # srh_3km = mpcalc.storm_relative_helicity(
-    #                                          u = u,
-    #                                          v = v,
-    #                                          height = zh,
-    #                                          depth = units.Quantity(3000, 'm'),
-    #                                          storm_u = rm[0],
-    #                                          storm_v = rm[1]
-    #                                         )
-    
-    # srh_1km = mpcalc.storm_relative_helicity(
-    #                                          u = u,
-    #                                          v = v,
-    #                                          height = zh,
-    #                                          depth = units.Quantity(1000, 'm'),
-    #                                          storm_u = rm[0],
-    #                                          storm_v = rm[1]
-    #                                         )
-
-    # p2 = np.arange( -45, 20, 6)
-    
-    # txt1 = plt.text( 0.0, p2[3], 'MLCAPE: ' + str( round( float(mlcape.m), 2 ) ) + ' Jkg$^{-1}$', fontsize = 14 )
-    # txt2 = plt.text( 0.0, p2[2], 'MLCIN: '  + str( round( float(mlcin.m),  2 ) ) + ' Jkg$^{-1}$', fontsize = 14 )   
-    # txt3 = plt.text( 0.0, p2[1], '0-3 km SRH: ' + str( round( float(srh_3km[0].m), 2 ) ) + ' m$^2$s$^{-2}$', fontsize = 14 )
-    # txt4 = plt.text( 0.0, p2[0], '0-1 km SRH: ' + str( round( float(srh_1km[0].m), 2 ) ) + ' m$^2$s$^{-2}$', fontsize = 14 )
-    
-    # Create a mask for wind barb plotting
-    mask = prs >= 100.0 * units.hPa
-    
-    # Determine which units of wind should be plotted
-    skew.plot_barbs( prs[ mask ][::2], u[ mask ][::2], v[ mask ][::2] )     
-
-    # Add legend 
-    if( i == 0 or i == 3 ):
-        skew.ax.legend( loc = 3, facecolor = 'grey',  framealpha = 0.2, fontsize = 14 )
-    
-#------------------------------------------------------------------------------
-# End: Loop to plot on each axis
-#------------------------------------------------------------------------------
-
-
+# Save figure
+fig.savefig( fname = 'BSS_RLTRN_storm_track_w_swath_V2.jpeg', dpi = 300, bbox_inches = "tight" )
 
 #-----------------------------------------------------------------------------
-# End: BSS Sounding Section
+#-----------------------------------------------------------------------------
+# End Main Script
+#-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 
-# # Save figure
-# fig.savefig(
-#             fname = 'BSS_RLTRN_storm_tracks_w_swath.jpeg',
-#             dpi = 300,
-#             bbox_inches = "tight"
-#            )
+# Confirm that script successfully ran
+print( "\n{} successfully completed!".format( program ) )
+
+# Report the time required to run the function
+print( "\nScript Total Runtime: {}".format( datetime.now() - startTime ) )
