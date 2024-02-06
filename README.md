@@ -8,13 +8,13 @@ The following repository contains the necessary data, scripts, and compiled exec
 
 Preliminary results are already published in my Master's Thesis which is available via Proquest (Riggin 2022) or upon request.
 
-The publication (i.e., Riggin IV et al. In Review) has been submitted to Monthly Weather Review for an initial review. The repository will be updated with appropriate links and references as the peer-review proceeds. A non-peer-reviewed draft is currently available upon request.
+The publication (i.e., Riggin IV et al. In Review) has been submitted to Monthly Weather Review for an initial review. The repository will be updated with appropriate links and references as the peer review proceeds. A non-peer-reviewed draft is currently available upon request.
 
 # Folder 1): BSS_cm1r20.3_and_CI_Delay_SRC_Files
 
 This folder contains all necessary files that are required to incorporate both Base-State Substitution (BSS; Letkewicz et al. 2013; Davenport et al. 2019) and Convective Initiation (CI) delay functionality into CM1. The BSS code was developed and graciously provided by Dr. Casey Davenport (UNCC; casey.davenport@charlotte.edu). See README within this folder for additional details. 
 
-Note, that this functionality is only confirmed to work with cm1r20.3 (June 2021) and has not been tested with the latest update (cm1r21.0; April 2022). 
+Note, that the included code functionality has only been confirmed to work with cm1r20.3 (June 2021) and has not been tested with the latest update (cm1r21.0; April 2022). Please contact Dr. Davenport for more information on BSS updates since this work was completed. 
 
 Included Fortran files must be placed in the /cm1r20.3/src/ directory. Additionally, the Makefile will need to be modified for your specific HPC environment.
 
