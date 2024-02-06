@@ -1,7 +1,8 @@
 # README_Figure_Generation
 
 README file discussing contents of /Scripts/Figure_Generation folder. 
-Author: R.R. Riggin, July 2023 (Updated 2/6/2024)
+Author: R.R. Riggin, July 2023
+(Updated 2/6/2024)
 
 # Summary
 
