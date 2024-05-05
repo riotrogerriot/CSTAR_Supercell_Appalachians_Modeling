@@ -183,14 +183,14 @@ ax_C.set_ylabel( 'w\u03b6 > 0.1 m s$^{-2}$ Area (km$^{2}$)', fontsize = 18, font
 ax_D.set_ylabel( 'MLCAPE (J kg$^{-1}$)', fontsize = 18, fontweight = 'bold'  )
 ax_D2.set_ylabel( 'MLCIN (J kg$^{-1}$)', fontsize = 18, fontweight = 'bold'  )
 ax_E.set_ylabel( 'Shear (m s$^{-1}$)', fontsize = 18, fontweight = 'bold'  )
-ax_F.set_ylabel( 'SRH (m$^{2} $s$^{-2}$)', fontsize = 18, fontweight = 'bold'  )
+ax_F.set_ylabel( 'SRH (m$^{2}$ s$^{-2}$)', fontsize = 18, fontweight = 'bold'  )
 ax_G.set_ylabel( 'Z (m)', fontsize = 18, fontweight = 'bold'  )
-ax_H2.set_ylabel( 'Min $\u03b8_{pert} (K)$', fontsize = 18, fontweight = 'bold'  )
+ax_H2.set_ylabel( 'Min $\u03b8_{pert}$ (K)', fontsize = 18, fontweight = 'bold'  )
 ax_H.set_ylabel( '$\u03b8_{pert}$ < -1 K Area (km$^{2}$)', fontsize = 18, fontweight = 'bold' )
 
 
 # Special line
-ax_A.axhline( y = 150.0, color = 'k' ) 
+# ax_A.axhline( y = 150.0, color = 'k' ) 
 ax_H.axhline( y = 0, color = 'k' ) 
 
 ax_A.axvline( x = 180.0, color = 'k', linestyle = '--' )
@@ -270,9 +270,9 @@ ax_H.set_xlim( 60, 380 )
 for i in range( 0, len( sim ) ):
     
     # Construct filename string (!!! Requires appropriate directory containing BSS IDTRN CSVs !!!)
-    os_type = 1
+    os_type = 0
     if( os_type == 0 ):
-        wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheet/'
+        wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/'
     else:
         wdir = 'C:/Users/rriggin/OneDrive - University of North Carolina at Charlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/'
     filename = wdir + str(sim[i]) + '_model_output_stats.csv'
@@ -329,8 +329,18 @@ for i in range( 0, len( sim ) ):
     # cp_area = cp_area / 100.0
     cp_area = gauss_smoother( cp_area, smooth )
 
+    # Run terrain profile through guassian smoother    
+    zs_alt = gauss_smoother( zs * 1000, smooth )
     
+    # Find peak altitude location
+    peak = np.where( zs_alt == np.amax( zs_alt[ sup_start[i]:dis_end[i] ] ) )
+    peak = peak[0][0] 
 
+    for ax in axes:
+        axes[ax].axvline( x = time[peak], linestyle = '-', linewidth = 1.5*lwidth, color = color[i], alpha = 0.5 )
+
+    zline = mlines.Line2D( [], [], color = 'k', linewidth = 1.5*lwidth, linestyle = '-', label = 't = Peak Elevation', alpha = 0.5 )
+    
     # Begin Plotting Data
     #--------------------------------------------------------------------------
     
@@ -347,7 +357,7 @@ for i in range( 0, len( sim ) ):
         ax_A.scatter( time[ linear[i] ], uh_area[ linear[i] ], marker = 'v', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
 
     # Add legend & Grid
-    # ax_A.legend( title = 'Simulations', prop = {'size': 14}, loc = 'lower right', facecolor = 'lightgrey' )
+    ax_A.legend( title = 'Simulations', prop = {'size': 14}, loc = 'lower right', facecolor = 'lightgrey' )
     ax_A.grid()
 
 
@@ -362,7 +372,7 @@ for i in range( 0, len( sim ) ):
         ax_B.scatter( time[ sup_end[i] + 1 ], meso_depth[ sup_end[i] + 1 ], marker = 's', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
         ax_B.scatter( time[ linear[i] ], meso_depth[ linear[i] ], marker = 's', color = color[i], edgecolor = 'k', s = 100, zorder = 10 )
         
-    # ax_B.legend( title = 'Simulations', prop = {'size': 14}, loc = 'lower right', facecolor = 'lightgrey' )
+    ax_B.legend( title = 'Simulations', prop = {'size': 14}, loc = 'lower right', facecolor = 'lightgrey' )
     ax_B.grid()
     
     
@@ -484,8 +494,8 @@ for i in range( 0, len( sim ) ):
     ax_F.grid()
     
     
-    # Run terrain profile through guassian smoother   
-    zs_alt = gauss_smoother( zs * 1000, smooth )
+    # # Run terrain profile through guassian smoother   
+    # zs_alt = gauss_smoother( zs * 1000, smooth )
     
     # Same plotting methods for panel G
     ax_G.plot( time[ start_time:dis_end[i] ], zs_alt[ start_time:dis_end[i] ], color = color[i], linewidth = lwidth, linestyle = '-', label = sim[i].upper()  )
@@ -544,17 +554,17 @@ ax_H.grid()
 # Create storm mode custom legend for panel G    
 sup_lab = mlines.Line2D( [], [], color = 'k', marker = 'v', ms = 12, label = 'Supercell' )
 linear_lab = mlines.Line2D( [], [], color = 'k', marker = 's', ms = 12, label = 'Linear' )
-g_leg1 = ax_G.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, linear_lab], loc = 'upper right', prop = {'size': 14}, facecolor = 'lightgrey' )
-g_leg2 = ax_G.legend( title = 'Simulations', prop = {'size': 14}, loc = 'upper left', facecolor = 'lightgrey' )
+g_leg1 = ax_G.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, linear_lab, zline], loc = 'upper right', prop = {'size': 14}, facecolor = 'lightgrey' )
+# g_leg2 = ax_G.legend( title = 'Simulations', prop = {'size': 14}, loc = 'upper left', facecolor = 'lightgrey' )
 ax_G.add_artist( g_leg1 )
-ax_G.add_artist( g_leg2 )
+# ax_G.add_artist( g_leg2 )
 
-# # Save figure
-# fig.savefig(
-#             fname = 'BSS_RLTRN_Time-Series.jpeg',
-#             dpi = 300,
-#             bbox_inches = "tight"
-#            )
+# Save figure
+fig.savefig(
+            fname = 'BSS_RLTRN_Time-Series.jpeg',
+            dpi = 300,
+            bbox_inches = "tight"
+            )
 
 
 # Report script runtime

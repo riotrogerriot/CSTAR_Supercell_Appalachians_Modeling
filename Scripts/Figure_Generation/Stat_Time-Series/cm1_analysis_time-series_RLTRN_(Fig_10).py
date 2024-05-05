@@ -98,7 +98,7 @@ def gauss_smoother( arr, smooth = 6 ) :
 #-------------------------------------------------------------------
 #-------------------------------------------------------------------
 
-os_type = 1
+os_type = 0
 
 # Store program name
 program = 'CM1_Analysis_RLTRN_Time-Series.py'
@@ -219,13 +219,13 @@ ax_C.set_ylabel( 'w\u03b6 > 0.1 m s$^{-2}$ Area (km$^{2}$)', fontsize = 18, font
 ax_D.set_ylabel( 'MLCAPE (J kg$^{-1}$)', fontsize = 18, fontweight = 'bold'  )
 ax_D2.set_ylabel( 'MLCIN (J kg$^{-1}$)', fontsize = 18, fontweight = 'bold'  )
 ax_E.set_ylabel( 'Shear (m s$^{-1}$)', fontsize = 18, fontweight = 'bold'  )
-ax_F.set_ylabel( 'SRH (m$^{2} $s$^{-2}$)', fontsize = 18, fontweight = 'bold'  )
+ax_F.set_ylabel( 'SRH (m$^{2}$ s$^{-2}$)', fontsize = 18, fontweight = 'bold'  )
 ax_G.set_ylabel( 'Z (m)', fontsize = 18, fontweight = 'bold'  )
-ax_H2.set_ylabel( 'Min $\u03b8_{pert} (K)$', fontsize = 18, fontweight = 'bold'  )
+ax_H2.set_ylabel( 'Min $\u03b8_{pert}$ (K)', fontsize = 18, fontweight = 'bold'  )
 ax_H.set_ylabel( '$\u03b8_{pert}$ < -1 K Area (km$^{2}$)', fontsize = 18, fontweight = 'bold' )
 
 # Special lines
-supercell_thresh = ax_A.axhline( y = 150.0, color = 'k' ) 
+# supercell_thresh = ax_A.axhline( y = 150.0, color = 'k' ) 
 ax_A.axhline( y = 0, color = 'k' ) 
 ax_B.axhline( y = 0, color = 'k' ) 
 ax_C.axhline( y = 0, color = 'k' ) 
@@ -263,6 +263,7 @@ for i in range( 0, len( sim ) ):
         wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Steady_State_Sims/real_terrain/'
     else:
         wdir = 'C:/Users/rriggin/OneDrive - University of North Carolina at Charlotte/CSTAR_Modeling_Project/Simulations/Steady_State_Sims/real_terrain/'
+    
     filename = wdir + '/V3/' + sim[i] + '/' + sim[i] +'_model_output_stats.csv'
     
     
@@ -306,6 +307,19 @@ for i in range( 0, len( sim ) ):
     
     # cp_area = cp_area / 100.0
     cp_area = gauss_smoother( cp_area, smooth )
+    
+    # Run terrain profile through guassian smoother    
+    zs_alt = gauss_smoother( zs * 1000, smooth )
+    
+    # Find peak altitude location
+    peak = np.where( zs_alt == np.amax( zs_alt[ sup_start[i]:dis_end[i] ] ) )
+    peak = peak[0][0] 
+
+    for ax in axes:
+        axes[ax].axvline( x = time[peak], linestyle = '-', linewidth = 1.5*lwidth, color = color[i], alpha = 0.5 )
+
+    zline = mlines.Line2D( [], [], color = 'k', linewidth = 1.5*lwidth, linestyle = '-', label = 't = Peak Elevation', alpha = 0.5 )
+    
 
     
 
@@ -462,9 +476,6 @@ for i in range( 0, len( sim ) ):
     ax_F.grid()
     
     
-    # Run terrain profile through guassian smoother    
-    zs_alt = gauss_smoother( zs * 1000, smooth )
-    
     # Same plotting methods for panel G
     ax_G.plot( time[ 0:dis_end[i] ], zs_alt[ 0:dis_end[i] ], color = color[i], linewidth = lwidth, linestyle = '-', label = sim[i].upper() + ' Elevation' )
     
@@ -522,15 +533,15 @@ ax_H.grid()
 # Create storm mode custom legend for panel G    
 sup_lab = mlines.Line2D( [], [], color = 'k', marker = 'v', ms = 12, label = 'Supercell' )
 linear_lab = mlines.Line2D( [], [], color = 'k', marker = 's', ms = 12, label = 'Linear' )
-ax_G.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, linear_lab], loc = 'upper right', prop = {'size': 14}, facecolor = 'lightgrey' )
+ax_G.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, linear_lab, zline], loc = 'upper right', prop = {'size': 14}, facecolor = 'lightgrey' )
 
 
-# # Save figure
-# fig.savefig(
-#             fname = '{}_rltrn_stats_plot_v2.jpeg'.format( composite ),
-#             dpi = 300,
-#             bbox_inches = "tight"
-#            )
+# Save figure
+fig.savefig(
+            fname = '{}_rltrn_stats_plot_v2.jpeg'.format( composite ),
+            dpi = 300,
+            bbox_inches = "tight"
+            )
 
 # Report script runtime
 print( "\nScript Total Runtime: {}".format( datetime.now() - startTime ) )
