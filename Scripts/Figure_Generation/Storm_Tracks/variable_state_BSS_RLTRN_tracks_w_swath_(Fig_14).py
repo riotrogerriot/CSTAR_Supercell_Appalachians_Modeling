@@ -64,7 +64,7 @@ def gauss_smoother( arr, smooth = 2 ) :
 
 # Program name, main directory, and sub-directories required to run this script
 program = 'CM1_Analysis_RLTRN_Storm_Tracks_w_Swath.py'
-os_type = 1
+os_type = 0
 if( os_type == 0 ):
     wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/Stats_Spreadsheets/'
 else:
@@ -275,7 +275,7 @@ cbar.ax.set_title( 'Z (m)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 # Include color bar legend (UH Swath ) and set label
 cbar2  = plt.colorbar( cs1, location = 'right', shrink = 0.85, ticks = np.arange( uh_bot, uh_top+uh_int, uh_int ),
                        drawedges = True, ax = ax_B ) 
-cbar2.ax.set_title( '\tUH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
+cbar2.ax.set_title( '\tUH (m$^{2}$ s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 
 
 # Save figure

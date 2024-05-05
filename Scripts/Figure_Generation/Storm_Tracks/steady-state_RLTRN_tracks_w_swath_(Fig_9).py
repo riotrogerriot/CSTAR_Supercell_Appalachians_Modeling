@@ -63,7 +63,7 @@ def gauss_smoother( arr, smooth = 2 ) :
 
 # Program name, main directory, and sub-directories required to run this script
 program = 'CM1_Analysis_RLTRN_Storm_Tracks_w_Swath.py'
-os_type = 1
+os_type = 0
 if( os_type == 0 ):
     wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Steady_State_Sims/real_terrain/'
 else:
@@ -89,7 +89,7 @@ alpha = 0.45        # Contourf transparency parameter
 # Simulation-Specific Parameters
 #------------------------------------------------------------------------------
 sim = [ 'nc_rltrn', 'cs_rltrn' ]                # Sim names
-color = [ 'tab:blue', 'tab:red'  ]              # Sim colors
+color = [ 'tab:blue', 'tab:red' ]               # Sim colors
 sup_start = [ 45, 45 ]                          # Supercell Start Index
 sup_end = [ 80, 66 ]                            # Supercell End Index
 dis_end = [ 96, 78 ]                            # Dissipation Time Index
@@ -173,6 +173,7 @@ for i in range( 0, len( sim ) ):
     
     # Construct filename string (!!! REQUIRES Appropriate link to directory containing RLTRN CSVs !!!)
     filename = wdir + 'V3/' + sim[i] + '/' + sim[i] + '_model_output_stats.csv'
+    # filename = wdir + 'V2/' + sim[i] + '/model_output_stats.csv'
     
     # Read in current simulation spreadsheet summary dataset
     ( mode, time, x1, y1, x2, y2, zs, w500m, w1km, w3km, w5km, zvort_surface, zvort_500m, 
@@ -260,7 +261,7 @@ cbar.ax.set_title( 'Z (m)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 # Include color bar legend (UH Swath ) and set label
 cbar2  = plt.colorbar( cs1, location = 'right', shrink = 0.85, ticks = np.arange( uh_bot, uh_top+uh_int, uh_int ),
                        drawedges = True, ax = ax_B ) 
-cbar2.ax.set_title( '\tUH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
+cbar2.ax.set_title( '\tUH (m$^{2}$ s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 
 
 # Save figure

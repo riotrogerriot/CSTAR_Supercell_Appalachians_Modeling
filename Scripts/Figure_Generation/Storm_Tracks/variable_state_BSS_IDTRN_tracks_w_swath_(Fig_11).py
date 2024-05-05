@@ -91,7 +91,7 @@ def witch_of_agnesi( nx = 2401, ny = 1601, dx = 250.0, h0 = 750.0, x0 = 350000.0
 program = 'CM1_BSS_Analysis_Storm_Tracks_w_Swath.py'
 
 # OS boolean (0 = MacOS, 1 = Windows)
-os_type = 1
+os_type = 0
 if( os_type == 0 ):
     wdir = '/Users/roger/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatCharlotte/CSTAR_Modeling_Project/Simulations/Variable_State_Sims/'
 else:
@@ -297,7 +297,7 @@ ax_B.legend( title = 'Storm Mode (Start/End)', handles = [sup_lab, lin_lab], loc
 cbar  = plt.colorbar( terrain_fill, location = 'right', shrink = 0.85, ticks = np.arange( 0, 825.0, 75.0 ), drawedges = True, ax = ax_A ) 
 cbar.ax.set_title( 'Z (m)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 cbar2  = plt.colorbar( cs1, location = 'right', shrink = 0.85, ticks = np.arange( uh_bot, uh_top+uh_int, uh_int ), drawedges = True, ax = ax_B ) 
-cbar2.ax.set_title( '\tUH (m$^{2}$s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
+cbar2.ax.set_title( '\tUH (m$^{2}$ s$^{-2}$)', fontsize = 16, fontweight = 'bold', pad = 20.0 )
 cbar3  = plt.colorbar( cs1, location = 'right', shrink = 0.85, ticks = np.arange( uh_bot, uh_top+uh_int, uh_int ), drawedges = True, ax = ax_C ) 
 
 # Save figure
