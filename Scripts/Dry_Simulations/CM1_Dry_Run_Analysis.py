@@ -54,11 +54,11 @@ def witch_of_agnesi( nx = 2401, ny = 1601, dx = 250.0,
 #-------------------------------------------------------------------
 
 # Working directory
-# main_dir = '/scratch/rriggin/cm1r20.3/original_sims_req_files/Crosser/Idealized_Terrain_NoBSS/dry_run'
-main_dir = '/Users/roger/Desktop/'
+main_dir = '/scratch/rriggin/cm1r20.3_init3d_mod/dry_simulations/nc_idtrn/'
+# main_dir = '/Users/roger/Desktop/'
 
 # Composite Environment Label
-env = 'Crossing'
+env = 'Non-Crossing'
 
 # Number of gridpoints in x-direction
 nx = 2400
@@ -99,7 +99,7 @@ os.chdir( main_dir )
 
 # Loop through specified model output files
 #------------------------------------------------------------------------------
-for i in np.arange( 25, 26 ):
+for i in np.arange( 1, 49, 6 ):
     
     # Get current integration time
     current_model_time = (i-1) * 5.0 
@@ -107,21 +107,21 @@ for i in np.arange( 25, 26 ):
     # Logic to open standard cm1out netCDF
     #-------------------------------------
     
-    # # Define the current filename as a string
-    # if ( i < 10 ):
-    #     filename = 'cm1out_00000' + str(i) + '.nc'
-    #     print( "\tOpening " + filename + "..." )
+    # Define the current filename as a string
+    if ( i < 10 ):
+        filename = 'cm1out_00000' + str(i) + '.nc'
+        print( "\tOpening " + filename + "..." )
         
-    # elif( i < 100 and i >= 10 ):
-    #     filename = 'cm1out_0000' + str(i) + '.nc'
-    #     print( "\nOpening " + filename + "...")  
+    elif( i < 100 and i >= 10 ):
+        filename = 'cm1out_0000' + str(i) + '.nc'
+        print( "\nOpening " + filename + "...")  
     
-    # else:
-    #     filename = 'cm1out_000' + str(i) + '.nc'
-    #     print( "\nOpening " + filename + "...")
+    else:
+        filename = 'cm1out_000' + str(i) + '.nc'
+        print( "\nOpening " + filename + "...")
 
-    # # Open the current netCDF file with xarray 
-    # DS = xr.open_dataset( filename, engine = "netcdf4", decode_cf = True )    
+    # Open the current netCDF file with xarray 
+    DS = xr.open_dataset( filename, engine = "netcdf4", decode_cf = True )    
     
     
     # Define the terrain-interpolated filename as a string
@@ -244,7 +244,7 @@ for i in np.arange( 25, 26 ):
     
     # Set axis_A limits
     ax_A.set_xlim( -350, 250 )
-    ax_A.set_ylim( 0, 3.0 )
+    ax_A.set_ylim( 0, 1.5 )
     
     # Draw lines where soundings are pulled
     ax_A.axvline( x = -200, linestyle = '--', color = 'k' )
@@ -260,7 +260,7 @@ for i in np.arange( 25, 26 ):
     # Plot contours of potential temperature
     c1 = ax_A.contour(
                       xh, zh, th_mask[:,800,:],
-                      levels = np.arange( 300, 313, 1 ),
+                      levels = np.arange( 299, 305, 0.25 ),
                       linestyles = 'solid', linewidths = 2.0, 
                       colors = 'black', alpha = 1.0
                      )
@@ -268,7 +268,7 @@ for i in np.arange( 25, 26 ):
     # Plot filled contours of potential temperature
     cf1 = ax_A.contourf( 
                        xh, zh, th_mask[ :, 800, : ], 
-                       levels = np.arange( 300, 313, 1 ), 
+                       levels = np.arange( 299, 305, 0.25 ), 
                        linestyles = "solid",
                        cmap = "binary",
                        alpha = 0.75
@@ -406,28 +406,40 @@ for i in np.arange( 25, 26 ):
         lfc_lcl_delta = lfc_pressure - lcl_pressure
         
         # Compute N (Data Array) through terrain depth (zh[6] ~ 1 km)
-        N = mpcalc.brunt_vaisala_frequency( height = zh[0:km1].to('m'), potential_temperature = th_arrs[j][0:km1] )
+        N_3km = mpcalc.brunt_vaisala_frequency( height = zh[0:km3].to('m'), potential_temperature = th_arrs[j][0:km3] )
+        N_1km = mpcalc.brunt_vaisala_frequency( height = zh[0:km1].to('m'), potential_temperature = th_arrs[j][0:km1] )
+        N_500m = mpcalc.brunt_vaisala_frequency( height = zh[0:m500].to('m'), potential_temperature = th_arrs[j][0:m500] )
+        # N_2m = mpcalc.brunt_vaisala_frequency( height = zh[0:2].to('m'), potential_temperature = th_arrs[j][0:2] )
+        
         
         # Average the results of N for a single value representative of the 0-3 km Layer
-        N_avg = np.average( N )
+        N_avg_3km = np.average( N_3km )
+        N_avg_1km = np.average( N_1km )
+        N_avg_500m = np.average( N_500m )
+        # N_avg_surf = np.average( N_2m )
         
         ax.text( x = 0.025, y = 0.7, s = 'CAPE: ' + str( round(mlcape.m,0) ), fontsize = 14, transform = ax.transAxes )
         ax.text( x = 0.025, y = 0.6, s = 'CIN: ' + str( round(mlcin.m,0) ), fontsize = 14, transform = ax.transAxes )
         ax.text( x = 0.025, y = 0.5, s = 'LFC-LCL: ' + str( round(lfc_lcl_delta.m,0) ), fontsize = 14, transform = ax.transAxes )
-        ax.text( x = 0.025, y = 0.4, s = 'N1KM: ' + str( round(N_avg.m,3) ), fontsize = 14, transform = ax.transAxes )
+        ax.text( x = 0.025, y = 0.4, s = 'N1KM: ' + str( round(N_avg_1km.m,3) ), fontsize = 14, transform = ax.transAxes )
         
         # Average the zonal wind through the 0-3 km Layer
-        u_avg = np.average( u_arrs[j][0:km3] ) * units( 'm/s' )
+        u_avg_3km = np.average( u_arrs[j][0:km3] ) * units( 'm/s' )
         u_avg_1km =np.average( u_arrs[j][0:km1] ) * units( 'm/s' )
+        u_avg_500m =np.average( u_arrs[j][0:m500] ) * units( 'm/s' )
+        # u_avg_surf = np.average( u_arrs[j][0:2] )  * units( 'm/s' )
         
-        Fr_avg_3km = ( u_avg )/ ( N_avg * np.amax( hx ).to( 'm' ) )
+        Fr_avg_3km = ( u_avg_3km )/ ( N_avg_3km * np.amax( hx ).to( 'm' ) )
         ax.text( x = 0.025, y = 0.3, s ='F3KM: ' + str(round(Fr_avg_3km.m, 2) ), fontsize = 14, transform = ax.transAxes )
         
-        Fr_avg_1km = ( u_avg_1km )/ ( N_avg * np.amax( hx ).to( 'm' ) )
+        Fr_avg_1km = ( u_avg_1km )/ ( N_avg_1km * np.amax( hx ).to( 'm' ) )
         ax.text( x = 0.025, y = 0.2, s = 'F1KM: ' + str( round( Fr_avg_1km.m, 2 ) ), fontsize = 14, transform = ax.transAxes )
         
-        Fr_surface = ( u_arrs[j][0] * units( 'm/s' ) )/ ( N_avg * np.amax( hx ).to( 'm' ) )
-        ax.text( x = 0.025, y = 0.1, s = 'F0KM: ' + str( round(Fr_surface.m, 2 ) ), fontsize = 14, transform = ax.transAxes )
+        Fr_avg_500m = ( u_avg_500m )/ ( N_avg_500m * np.amax( hx ).to( 'm' ) )
+        ax.text( x = 0.025, y = 0.1, s = 'F500M: ' + str( round( Fr_avg_500m.m, 2 ) ), fontsize = 14, transform = ax.transAxes )
+        
+        # Fr_surface = ( u_avg_surf )/ ( N_avg_surf * np.amax( hx ).to( 'm' ) )
+        # ax.text( x = 0.025, y = 0.1, s = 'F0KM: ' + str( round(Fr_surface.m, 2 ) ), fontsize = 14, transform = ax.transAxes )
         
     # End loop through each sounding point
     #-----------------------------------------------------------------------------
