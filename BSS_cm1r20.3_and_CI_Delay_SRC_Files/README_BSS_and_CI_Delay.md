@@ -20,7 +20,7 @@ How to incorporate CI_Delay files:
 4. When ready to compile, return to src folder, type "make"
 5. Configure namelist as usual and run executable to start simulation
 
-In Riggin IV et al. (202X), this modification required to run the steady-state RLTRN simulations (e.g., CS_RLTRN_ALL, NC_RLTRN_ALL, CS_RLTRN_NO_OUT, NC_RLTRN_NO_OUT, CS_RLTRN_OUT, NC_RLTRN_OUT). This modification was used in conjunction with BSS (see below) to run the variable-state RLTRN simulations (e.g., BSS_CS_RLTRN_ALL, BSS_NC_RLTRN_ALL).
+In Riggin et al. (In Review), this modification required to run the steady-state RLTRN simulations (e.g., CS_RLTRN_ALL, NC_RLTRN_ALL, CS_RLTRN_NO_OUT, NC_RLTRN_NO_OUT, CS_RLTRN_OUT, NC_RLTRN_OUT). This modification was used in conjunction with BSS (see below) to run the variable-state RLTRN simulations (e.g., BSS_CS_RLTRN_ALL, BSS_NC_RLTRN_ALL).
 
 
 # README_BSS
