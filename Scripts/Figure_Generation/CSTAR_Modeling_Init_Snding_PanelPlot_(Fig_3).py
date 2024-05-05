@@ -405,10 +405,10 @@ for i in range( 0, len(axes) ):
     else:
         p2 = np.arange( -75, 20, 6)
         
-    txt1 = plt.text( 0.0, p2[3], 'MLCAPE: ' + str( round( float(mlcape.m), 2 ) ) + ' Jkg$^{-1}$', fontsize = 14 )
-    txt2 = plt.text( 0.0, p2[2], 'MLCIN: '  + str( round( float(mlcin.m),  2 ) ) + ' Jkg$^{-1}$', fontsize = 14 )   
-    txt3 = plt.text( 0.0, p2[1], '0-3 km SRH: ' + str( round( float(srh_3km[0].m), 2 ) ) + ' m$^2$s$^{-2}$', fontsize = 14 )
-    txt4 = plt.text( 0.0, p2[0], '0-1 km SRH: ' + str( round( float(srh_1km[0].m), 2 ) ) + ' m$^2$s$^{-2}$', fontsize = 14 )
+    txt1 = plt.text( 0.0, p2[3], 'MLCAPE: ' + str( round( float(mlcape.m), 2 ) ) + ' J kg$^{-1}$', fontsize = 14 )
+    txt2 = plt.text( 0.0, p2[2], 'MLCIN: '  + str( round( float(mlcin.m),  2 ) ) + ' J kg$^{-1}$', fontsize = 14 )   
+    txt3 = plt.text( 0.0, p2[1], '0-3 km SRH: ' + str( round( float(srh_3km[0].m), 2 ) ) + ' m$^2$ s$^{-2}$', fontsize = 14 )
+    txt4 = plt.text( 0.0, p2[0], '0-1 km SRH: ' + str( round( float(srh_1km[0].m), 2 ) ) + ' m$^2$ s$^{-2}$', fontsize = 14 )
     
     # Create a mask for wind barb plotting
     mask = prs >= 100.0 * units.hPa
