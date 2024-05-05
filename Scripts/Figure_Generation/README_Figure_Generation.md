@@ -2,11 +2,11 @@
 
 README file discussing contents of /Scripts/Figure_Generation folder. 
 Author: R.R. Riggin, July 2023
-(Updated 2/6/2024)
+(Updated 5/5/2024)
 
 # Summary
 
-We've included all python3 scripts and the most-required model output or post-processed data required to emulate the analysis figures in Riggin IV et al. (In Review). These respective figures are included as well for reference, though additional annotations and cleaning were performed after the initial generation via the included scripts to reach the final publication-quality products. Any interested party can contact the corresponding author for required data not included in the repository (largely due to file size limitations). 
+We've included all python3 scripts and the most-required model output or post-processed data required to emulate the analysis figures in Riggin et al. (In Review). These respective figures are included as well for reference, though additional annotations and cleaning were performed after the initial generation via the included scripts to reach the final publication-quality products. Any interested party can contact the corresponding author for required data not included in the repository (largely due to file size limitations). 
 
 # Folder Contents
 
@@ -29,6 +29,9 @@ This folder contains four python3 scripts to generate the storm track and UH swa
 
 6). CSTAR_Modeling_Init_Snding_PanelPlot_(Fig_3).py
 A script that uses the initial conditions model output files for each composite environment to generate a summary panel plot figure of all model background fields from Purpura et al. (2023) that were utilized in this study.
+
+7). terrain_induced_perturbations_from_BS_with_FrH_(Figs7-8).py
+A script used to analyze the base-state environment and computer 4-hr perturbation values of CAPE, CIN, SRH, and mountain Froude Number (FrH). Script includeds logic to choose between IDTRN and RLTRN, along with the modified hodograph IDTRN simulations (MOD). Requires model output files to run which were to large to include in the repository and are available upon request.
 
 # References
 
