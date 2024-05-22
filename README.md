@@ -84,4 +84,4 @@ Purpura, S. M., C. E. Davenport, M. D. Eastin, K. E. McKeown, and R. R. Riggin, 
 
 Riggin, Roger R., IV. (2022). Idealized simulations of supercell thunderstorms interacting with the appalachian mountains (Order No. 29397578). Available from Dissertations & Theses @ University of North Carolina Charlotte. (2726338467). https://www.proquest.com/dissertations-theses/idealized-simulations-supercell-thunderstorms/docview/2726338467/se-2
 
-Riggin IV, Roger R., C. E. Davenport, M. D. Eastin, K. E. McKeown, S. M. Purpura, and B. T. Katona, In Review: Idealized Simulations of Supercell Thunderstorms Interacting with the Appalachian Mountains. Mon. Wea. Rev.
+Riggin IV, Roger R., C. E. Davenport, M. D. Eastin, K. E. McKeown, S. M. Purpura, and B. T. Katona, In Review: Idealized Simulations of Supercell Thunderstorms Traversing the Appalachian Mountains. Mon. Wea. Rev.
